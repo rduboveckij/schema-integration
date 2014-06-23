@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="case">
+    <xs:sequence>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="expert" type="expert" minOccurs="0"/>
+      <xs:element name="id_case" type="xs:long" minOccurs="0"/>
+      <xs:element name="incident" type="incident" minOccurs="0"/>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+      <xs:element name="subject" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="expert" abstract="true">
+    <xs:sequence>
+      <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+      <xs:element name="id_expert" type="xs:long" minOccurs="0"/>
+      <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+      <xs:element name="password" type="xs:string" minOccurs="0"/>
+      <xs:element name="possition" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="incident">
+    <xs:sequence>
+      <xs:element name="id_incident" type="xs:long" minOccurs="0"/>
+      <xs:element name="nameOfIncident" type="xs:string" minOccurs="0"/>
+      <xs:element name="requester" type="requester" minOccurs="0"/>
+      <xs:element name="start_date" type="xs:dateTime" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="requester" abstract="true">
+    <xs:sequence>
+      <xs:element name="email" type="xs:string" minOccurs="0"/>
+      <xs:element name="first_name" type="xs:string" minOccurs="0"/>
+      <xs:element name="id_requester" type="xs:long" minOccurs="0"/>
+      <xs:element name="job_title" type="xs:string" minOccurs="0"/>
+      <xs:element name="last_name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="caseSolution">
+    <xs:sequence>
+      <xs:element name="cost" type="xs:int"/>
+      <xs:element name="date" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="numberOfErrorsThatOccurred" type="xs:string" minOccurs="0"/>
+      <xs:element name="solution" type="solution" minOccurs="0"/>
+      <xs:element name="aCase" type="case" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="solution">
+    <xs:sequence>
+      <xs:element name="id_solution" type="xs:long" minOccurs="0"/>
+      <xs:element name="nameOfSolution" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="category">
+    <xs:sequence>
+      <xs:element name="id_category" type="xs:long" minOccurs="0"/>
+      <xs:element name="nameOfCategory" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="cause">
+    <xs:sequence>
+      <xs:element name="incident" type="incident" minOccurs="0"/>
+      <xs:element name="problem" type="problem" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="problem">
+    <xs:sequence>
+      <xs:element name="id_problem" type="xs:long" minOccurs="0"/>
+      <xs:element name="solution" type="xs:string" minOccurs="0"/>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+      <xs:element name="subject" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="dbServer">
+    <xs:complexContent>
+      <xs:extension base="expert">
+        <xs:sequence>
+          <xs:element name="id_dbServer" type="xs:long" minOccurs="0"/>
+          <xs:element name="job_mail" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="description">
+    <xs:sequence>
+      <xs:element name="incident" type="incident" minOccurs="0"/>
+      <xs:element name="keyWords" type="keyWords" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="keyWords">
+    <xs:sequence>
+      <xs:element name="id_keyword" type="xs:long" minOccurs="0"/>
+      <xs:element name="numberOfWords" type="xs:int"/>
+      <xs:element name="word" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="hardware">
+    <xs:sequence>
+      <xs:element name="id_hardware" type="xs:long" minOccurs="0"/>
+      <xs:element name="solution" type="solution" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="lan">
+    <xs:complexContent>
+      <xs:extension base="expert">
+        <xs:sequence>
+          <xs:element name="job_mail" type="xs:string" minOccurs="0"/>
+          <xs:element name="lanUser" type="xs:long" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="profile">
+    <xs:sequence>
+      <xs:element name="id_profile" type="xs:long" minOccurs="0"/>
+      <xs:element name="nameOfProfile" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="regular">
+    <xs:complexContent>
+      <xs:extension base="requester">
+        <xs:sequence>
+          <xs:element name="id_regular" type="xs:long" minOccurs="0"/>
+          <xs:element name="job_mail" type="xs:string" minOccurs="0"/>
+          <xs:element name="profile" type="profile" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="software">
+    <xs:sequence>
+      <xs:element name="id_software" type="xs:long" minOccurs="0"/>
+      <xs:element name="solution" type="solution" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="visitor">
+    <xs:complexContent>
+      <xs:extension base="requester">
+        <xs:sequence>
+          <xs:element name="id_visitor" type="xs:long" minOccurs="0"/>
+          <xs:element name="job_mail" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="webServer">
+    <xs:complexContent>
+      <xs:extension base="expert">
+        <xs:sequence>
+          <xs:element name="id_WebServer" type="xs:long" minOccurs="0"/>
+          <xs:element name="job_mail" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+

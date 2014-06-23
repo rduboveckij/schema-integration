@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="configitem">
+    <xs:sequence>
+      <xs:element name="catalog" type="generalCatalog" minOccurs="0"/>
+      <xs:element name="change_by" type="users" minOccurs="0"/>
+      <xs:element name="configitem_number" type="xs:string" minOccurs="0"/>
+      <xs:element name="create_by" type="users" minOccurs="0"/>
+      <xs:element name="cur_depl_state_id" type="xs:long" minOccurs="0"/>
+      <xs:element name="cur_inci_state_id" type="xs:long" minOccurs="0"/>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="last_version" type="configitemVersion" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="generalCatalog">
+    <xs:sequence>
+      <xs:element name="change_by" type="users" minOccurs="0"/>
+      <xs:element name="comments" type="xs:string" minOccurs="0"/>
+      <xs:element name="created_by" type="users" minOccurs="0"/>
+      <xs:element name="general_catalog_class" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="users">
+    <xs:sequence>
+      <xs:element name="first_name" type="xs:string" minOccurs="0"/>
+      <xs:element name="first_name2" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="last_name" type="xs:string" minOccurs="0"/>
+      <xs:element name="login" type="xs:string" minOccurs="0"/>
+      <xs:element name="pw" type="xs:string" minOccurs="0"/>
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="configitemVersion">
+    <xs:sequence>
+      <xs:element name="configitem" type="generalCatalog" minOccurs="0"/>
+      <xs:element name="create_by" type="users" minOccurs="0"/>
+      <xs:element name="definition" type="configitemDefinition" minOccurs="0"/>
+      <xs:element name="depl_state_id" type="xs:long" minOccurs="0"/>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="inci_state_id" type="xs:long" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="configitemDefinition">
+    <xs:sequence>
+      <xs:element name="catalog" type="generalCatalog" minOccurs="0"/>
+      <xs:element name="configitem_definition" type="xs:string" minOccurs="0"/>
+      <xs:element name="create_time" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="created_by" type="users" minOccurs="0"/>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="version" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="configitemHistory">
+    <xs:sequence>
+      <xs:element name="configitem" type="configitem" minOccurs="0"/>
+      <xs:element name="content" type="xs:string" minOccurs="0"/>
+      <xs:element name="created_by" type="users" minOccurs="0"/>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="type" type="configitemHistoryType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="configitemHistoryType">
+    <xs:sequence>
+      <xs:element name="change_by" type="users" minOccurs="0"/>
+      <xs:element name="comments" type="xs:string" minOccurs="0"/>
+      <xs:element name="created_by" type="users" minOccurs="0"/>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="valid_id" type="xs:long" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="keywords">
+    <xs:sequence>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="linkRelation">
+    <xs:sequence>
+      <xs:element name="source" type="configitem" minOccurs="0"/>
+      <xs:element name="target" type="configitem" minOccurs="0"/>
+      <xs:element name="type" type="linkType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="linkType">
+    <xs:sequence>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="weight" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

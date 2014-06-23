@@ -15,7 +15,7 @@ public enum PrimitiveEnum {
     ANY_SIMPLE_TYPE("anySimpleType"),
     STRING("string"),
     BOOLEAN("boolean", STRING),
-    BASE_64_BINARY("base64Binary", PrimitiveEnum.HEX_BINARY),
+    BASE_64_BINARY("base64Binary"),
     HEX_BINARY("hexBinary", BASE_64_BINARY),
     DECIMAL("decimal", STRING),
     DOUBLE("double", DECIMAL, STRING),
