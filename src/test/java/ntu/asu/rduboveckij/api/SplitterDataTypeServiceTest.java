@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SplitterDataTypeServiceTest extends ApplicationConfigurationTest {
@@ -15,9 +16,6 @@ public class SplitterDataTypeServiceTest extends ApplicationConfigurationTest {
 
     @Test
     public void testSplitter() throws Exception {
-
-        List<String> splitter = splitterService.splitter(" HelloMy,name is-Bob_i.from  USA");
-        System.out.println(splitter + " " + splitter.size());
-        assertTrue(true);
+        assertEquals(8, splitterService.splitter(" HelloMy,name is-Bob_i.from  USA").size());
     }
 }

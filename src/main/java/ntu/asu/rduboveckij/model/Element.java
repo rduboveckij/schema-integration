@@ -1,6 +1,8 @@
 package ntu.asu.rduboveckij.model;
 
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @author andrus.god
@@ -11,7 +13,9 @@ public class Element extends AbstractName {
 
     public Element(String name, Set<Attribute> attributes) {
         super(name);
-        this.attributes = attributes;
+        this.attributes = attributes.stream()
+                .peek(attr -> attr.setElement(this))
+                .collect(Collectors.toSet());
     }
 
     public Set<Attribute> getAttributes() {
@@ -20,25 +24,5 @@ public class Element extends AbstractName {
 
     public void setAttributes(Set<Attribute> attributes) {
         this.attributes = attributes;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        Element element = (Element) o;
-
-        if (attributes != null ? !attributes.equals(element.attributes) : element.attributes != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
-        return result;
     }
 }

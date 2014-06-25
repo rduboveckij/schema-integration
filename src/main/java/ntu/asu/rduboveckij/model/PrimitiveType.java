@@ -7,19 +7,19 @@ import java.util.Set;
  * @since 16.06.2014
  */
 public class PrimitiveType extends DataType {
-    private Set<PrimitiveType> castDataType;
+    private PrimitiveEnum primitiveEnum;
 
-    public PrimitiveType(String name, Set<PrimitiveType> castDataType) {
-        super(name);
-        this.castDataType = castDataType;
+    public PrimitiveType(PrimitiveEnum primitiveEnum) {
+        super(primitiveEnum.getName());
+        this.primitiveEnum = primitiveEnum;
     }
 
-    public Set<PrimitiveType> getCastDataType() {
-        return castDataType;
+    public PrimitiveEnum getPrimitiveEnum() {
+        return primitiveEnum;
     }
 
-    public void setCastDataType(Set<PrimitiveType> castDataType) {
-        this.castDataType = castDataType;
+    public void setPrimitiveEnum(PrimitiveEnum primitiveEnum) {
+        this.primitiveEnum = primitiveEnum;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class PrimitiveType extends DataType {
 
         PrimitiveType that = (PrimitiveType) o;
 
-        if (castDataType != null ? !castDataType.equals(that.castDataType) : that.castDataType != null) return false;
+        if (primitiveEnum != that.primitiveEnum) return false;
 
         return true;
     }
@@ -38,7 +38,7 @@ public class PrimitiveType extends DataType {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (castDataType != null ? castDataType.hashCode() : 0);
+        result = 31 * result + (primitiveEnum != null ? primitiveEnum.hashCode() : 0);
         return result;
     }
 }

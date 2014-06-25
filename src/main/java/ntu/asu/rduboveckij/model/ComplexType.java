@@ -7,9 +7,8 @@ package ntu.asu.rduboveckij.model;
 public class ComplexType extends DataType {
     private Element element;
 
-    public ComplexType(String name, Element element) {
+    public ComplexType(String name) {
         super(name);
-        this.element = element;
     }
 
     public Element getElement() {

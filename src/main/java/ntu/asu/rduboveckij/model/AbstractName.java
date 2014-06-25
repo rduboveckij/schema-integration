@@ -4,7 +4,7 @@ package ntu.asu.rduboveckij.model;
  * @author andrus.god
  * @since 16.06.2014
  */
-abstract class AbstractName {
+public abstract class AbstractName {
     private String name;
 
     protected AbstractName(String name) {

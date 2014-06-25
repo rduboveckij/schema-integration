@@ -8,17 +8,16 @@ public class Attribute extends AbstractName {
     private Element element;
     private DataType type;
 
-    public Attribute(Element element, String name, DataType type) {
+    public Attribute(String name, DataType type) {
         super(name);
         this.type = type;
-        this.element = element;
     }
 
     public Element getElement() {
         return element;
     }
 
-    public void setElement(Element element) {
+    protected void setElement(Element element) {
         this.element = element;
     }
 

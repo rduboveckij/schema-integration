@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="expert" abstract="true">
+        <xs:sequence>
+            <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+            <xs:element name="id_expert" type="xs:long" minOccurs="0"/>
+            <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+            <xs:element name="password" type="xs:string" minOccurs="0"/>
+            <xs:element name="possition" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="lan">
+        <xs:complexContent>
+            <xs:extension base="expert">
+                <xs:sequence>
+                    <xs:element name="job_mail" type="xs:string" minOccurs="0"/>
+                    <xs:element name="lanUser" type="xs:long" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="dbServer">
+        <xs:complexContent>
+            <xs:extension base="expert">
+                <xs:sequence>
+                    <xs:element name="id_dbServer" type="xs:long" minOccurs="0"/>
+                    <xs:element name="job_mail" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

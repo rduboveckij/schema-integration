@@ -1,17 +1,24 @@
 package ntu.asu.rduboveckij.service;
 
 import com.google.common.base.Preconditions;
-import com.sun.xml.xsom.XSComplexType;
-import com.sun.xml.xsom.XSSchema;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.sun.xml.xsom.*;
 import com.sun.xml.xsom.parser.XSOMParser;
 import ntu.asu.rduboveckij.api.ParserService;
-import ntu.asu.rduboveckij.model.Model;
+import ntu.asu.rduboveckij.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.nio.file.Paths;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author andrus.god
@@ -19,19 +26,37 @@ import java.util.Collection;
  */
 @Service
 public class SchemaParserService implements ParserService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaParserService.class);
+
     @Override
     public Model parse(String uri) throws SAXException {
         Preconditions.checkArgument(new File(uri).exists());
         XSOMParser parser = new XSOMParser();
         parser.parse(uri);
         XSSchema schema = parser.getResult().getSchema(1);
-        Collection<XSComplexType> values = schema.getComplexTypes().values();
-        return null;
+
+        Map<String, Element> mapElements = schema.getComplexTypes().values()
+                .parallelStream()
+                .map(SchemaParserService::parseElement)
+                .collect(Collectors.toMap(Element::getName, Function.<Element>identity()));
+
+        Set<Element> elements = Sets.newHashSet(mapElements.values());
+        elements.stream()
+                .flatMap(elem -> elem.getAttributes().stream())
+                .map(Attribute::getType)
+                .filter(DataType::isComplex)
+                .map(DataType::asComplex)
+                .forEach(type -> {
+                    String name = type.getName();
+                    if (mapElements.containsKey(name)) type.setElement(mapElements.get(name));
+                    else LOGGER.warn("Data type " + name + " is not found!");
+                });
+        return new Model(uri, elements);
     }
 
-    /*private static Element parseElement(XSComplexType type) {
+    private static Element parseElement(XSComplexType type) {
         XSTerm term = type.getContentType().asParticle().getTerm();
-        return new Element(type.getName(), parseAttribute(term).collect(Collectors.toList()));
+        return new Element(type.getName(), parseAttribute(term).collect(Collectors.toSet()));
     }
 
     private static Stream<Attribute> parseAttribute(XSTerm term) {
@@ -39,7 +64,7 @@ public class SchemaParserService implements ParserService {
         if (term.isModelGroup()) {
             attributes = Arrays.stream(term.asModelGroup().getChildren())
                     .map(XSParticle::getTerm)
-                    .flatMap(SchemaParser::parseAttribute);
+                    .flatMap(SchemaParserService::parseAttribute);
         } else if (term.isElementDecl()) {
             attributes = Lists.newArrayList(parseAttribute(term.asElementDecl())).stream();
         }
@@ -47,6 +72,6 @@ public class SchemaParserService implements ParserService {
     }
 
     private static Attribute parseAttribute(XSElementDecl decl) {
-        return new Attribute(decl.getName(), decl.getType().getName());
-    }*/
+        return new Attribute(decl.getName(), DataType.valueOf(decl.getType().getName()));
+    }
 }

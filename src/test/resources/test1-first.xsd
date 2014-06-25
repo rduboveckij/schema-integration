@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:complexType name="customer">
-    <xs:sequence>
-      <xs:element name="born" type="xs:dateTime" minOccurs="0"/>
-      <xs:element name="creditCard" type="xs:int"/>
-      <xs:element name="customerId" type="xs:long"/>
-      <xs:element name="email" type="xs:string" minOccurs="0"/>
-      <xs:element name="firstName" type="xs:string" minOccurs="0"/>
-      <xs:element name="lastName" type="xs:string" minOccurs="0"/>
-      <xs:element name="surname" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
   <xs:complexType name="user">
     <xs:sequence>
       <xs:element name="birth" type="xs:dateTime" minOccurs="0"/>
@@ -25,4 +13,3 @@
     </xs:sequence>
   </xs:complexType>
 </xs:schema>
-
