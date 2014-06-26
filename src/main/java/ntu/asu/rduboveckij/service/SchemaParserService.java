@@ -63,6 +63,7 @@ public class SchemaParserService implements ParserService {
 
         XSType base = type.getBaseType();
         if(!ComplexType.ANY_TYPE.equals(base.getName()))
+            // todo: warning use stack
             element.setExtend(parseElement(base.asComplexType()));
         return element;
     }
