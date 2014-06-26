@@ -5,6 +5,8 @@ package ntu.asu.rduboveckij.model;
  * @since 16.06.2014
  */
 public class ComplexType extends DataType {
+    public static final String ANY_TYPE = "anyType";
+
     private Element element;
 
     public ComplexType(String name) {

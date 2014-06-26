@@ -10,6 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Set;
 
 public class ParserServiceTest extends ApplicationConfigurationTest {
@@ -26,12 +27,15 @@ public class ParserServiceTest extends ApplicationConfigurationTest {
         Element user = new Element("user", Sets.newHashSet());
         Element authorisation = new Element("authorisation", Sets.newHashSet());
         Set<Element> elements = Sets.newHashSet(user, authorisation);
-        Assert.assertEquals(model.getElements(), elements);
+        Assert.assertEquals("Elements did not parse correctly.", model.getElements(), elements);
     }
 
     @Test
-    @Ignore
     public void testHard() throws Exception {
         Model model = parserService.parse(TEST_FOLDER + "parser-hard.xsd");
+        Set<Element> elements = model.getElements();
+        Assert.assertEquals("It is too much elements.", elements.size(), 2);
+        List<Element> elementList = Lists.newArrayList(elements);
+        Assert.assertEquals("Base object is not same.", elementList.get(0).getExtend(), elementList.get(1).getExtend());
     }
 }

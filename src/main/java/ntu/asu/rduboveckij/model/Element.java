@@ -10,12 +10,21 @@ import java.util.stream.Collectors;
  */
 public class Element extends AbstractName {
     private Set<Attribute> attributes;
+    private Element extend;
 
     public Element(String name, Set<Attribute> attributes) {
         super(name);
         this.attributes = attributes.stream()
                 .peek(attr -> attr.setElement(this))
                 .collect(Collectors.toSet());
+    }
+
+    public Element getExtend() {
+        return extend;
+    }
+
+    public void setExtend(Element extend) {
+        this.extend = extend;
     }
 
     public Set<Attribute> getAttributes() {

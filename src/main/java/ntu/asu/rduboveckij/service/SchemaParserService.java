@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.sun.xml.xsom.*;
+import com.sun.xml.xsom.impl.SchemaSetImpl;
 import com.sun.xml.xsom.parser.XSOMParser;
 import ntu.asu.rduboveckij.api.ParserService;
 import ntu.asu.rduboveckij.model.*;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,6 +39,7 @@ public class SchemaParserService implements ParserService {
 
         Map<String, Element> mapElements = schema.getComplexTypes().values()
                 .parallelStream()
+                .filter(type -> !type.isAbstract())
                 .map(SchemaParserService::parseElement)
                 .collect(Collectors.toMap(Element::getName, Function.<Element>identity()));
 
@@ -56,7 +59,12 @@ public class SchemaParserService implements ParserService {
 
     private static Element parseElement(XSComplexType type) {
         XSTerm term = type.getContentType().asParticle().getTerm();
-        return new Element(type.getName(), parseAttribute(term).collect(Collectors.toSet()));
+        Element element = new Element(type.getName(), parseAttribute(term).collect(Collectors.toSet()));
+
+        XSType base = type.getBaseType();
+        if(!ComplexType.ANY_TYPE.equals(base.getName()))
+            element.setExtend(parseElement(base.asComplexType()));
+        return element;
     }
 
     private static Stream<Attribute> parseAttribute(XSTerm term) {
