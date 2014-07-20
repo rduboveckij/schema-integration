@@ -1,6 +1,6 @@
 package ntu.asu.rduboveckij.api;
 
-import ntu.asu.rduboveckij.model.Model;
+import ntu.asu.rduboveckij.model.external.Model;
 import org.xml.sax.SAXException;
 
 /**

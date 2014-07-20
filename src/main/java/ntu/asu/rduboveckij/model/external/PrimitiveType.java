@@ -1,6 +1,4 @@
-package ntu.asu.rduboveckij.model;
-
-import java.util.Set;
+package ntu.asu.rduboveckij.model.external;
 
 /**
  * @author andrus.god

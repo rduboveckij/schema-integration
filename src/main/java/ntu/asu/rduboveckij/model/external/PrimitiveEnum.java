@@ -1,11 +1,10 @@
-package ntu.asu.rduboveckij.model;
+package ntu.asu.rduboveckij.model.external;
 
 import com.google.common.collect.Sets;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * @author andrus.god

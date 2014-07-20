@@ -1,9 +1,8 @@
 package ntu.asu.rduboveckij;
 
+import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -14,5 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(classes = ApplicationConfiguration.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public abstract class ApplicationConfigurationTest {
-
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+    }
 }

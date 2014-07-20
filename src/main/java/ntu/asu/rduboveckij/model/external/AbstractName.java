@@ -1,10 +1,12 @@
-package ntu.asu.rduboveckij.model;
+package ntu.asu.rduboveckij.model.external;
+
+import ntu.asu.rduboveckij.model.AbstractParent;
 
 /**
  * @author andrus.god
  * @since 16.06.2014
  */
-public abstract class AbstractName {
+public abstract class AbstractName<P> extends AbstractParent<P> {
     private String name;
 
     protected AbstractName(String name) {
@@ -23,6 +25,7 @@ public abstract class AbstractName {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         AbstractName that = (AbstractName) o;
 
@@ -33,6 +36,8 @@ public abstract class AbstractName {
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 }

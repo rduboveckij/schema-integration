@@ -1,4 +1,4 @@
-package ntu.asu.rduboveckij.model;
+package ntu.asu.rduboveckij.model.external;
 
 /**
  * @author andrus.god
