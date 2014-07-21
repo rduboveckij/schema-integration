@@ -1,6 +1,7 @@
-package ntu.asu.rduboveckij.api;
+package ntu.asu.rduboveckij.api.algorithm;
 
 import ntu.asu.rduboveckij.ApplicationConfigurationTest;
+import ntu.asu.rduboveckij.api.algorithm.SplitterTermService;
 import org.junit.Test;
 
 import javax.inject.Inject;

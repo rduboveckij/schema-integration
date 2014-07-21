@@ -1,11 +1,12 @@
-package ntu.asu.rduboveckij.service;
+package ntu.asu.rduboveckij.service.algorithm;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.sun.xml.xsom.*;
 import com.sun.xml.xsom.parser.XSOMParser;
-import ntu.asu.rduboveckij.api.ParserService;
+import ntu.asu.rduboveckij.api.algorithm.ParserService;
 import ntu.asu.rduboveckij.model.external.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,16 +36,16 @@ public class SchemaParserService implements ParserService {
         parser.parse(uri);
         XSSchema schema = parser.getResult().getSchema(1);
 
-        Map<String, Element> mapElements = schema.getComplexTypes().values()
+        Map<String, Model.Element> mapElements = schema.getComplexTypes().values()
                 .parallelStream()
                 .filter(type -> !type.isAbstract())
                 .map(SchemaParserService::parseElement)
-                .collect(Collectors.toMap(Element::getName, Function.<Element>identity()));
+                .collect(Collectors.toMap(Model.Element::getName, Function.<Model.Element>identity()));
 
-        Set<Element> elements = Sets.newHashSet(mapElements.values());
+        Set<Model.Element> elements = Sets.newHashSet(mapElements.values());
         elements.stream()
                 .flatMap(elem -> elem.getAttributes().stream())
-                .map(Attribute::getType)
+                .map(Model.Attribute::getType)
                 .filter(DataType::isComplex)
                 .map(DataType::asComplex)
                 .forEach(type -> {
@@ -55,9 +56,11 @@ public class SchemaParserService implements ParserService {
         return new Model(uri, elements);
     }
 
-    private static Element parseElement(XSComplexType type) {
+    private static Model.Element parseElement(XSComplexType type) {
         XSTerm term = type.getContentType().asParticle().getTerm();
-        Element element = new Element(type.getName(), parseAttribute(term).collect(Collectors.toSet()));
+        String name = type.getName();
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(name));
+        Model.Element element = new Model.Element(name, parseAttribute(term).collect(Collectors.toSet()));
 
         XSType base = type.getBaseType();
         if(!ComplexType.ANY_TYPE.equals(base.getName()))
@@ -66,8 +69,8 @@ public class SchemaParserService implements ParserService {
         return element;
     }
 
-    private static Stream<Attribute> parseAttribute(XSTerm term) {
-        Stream<Attribute> attributes = Stream.empty();
+    private static Stream<Model.Attribute> parseAttribute(XSTerm term) {
+        Stream<Model.Attribute> attributes = Stream.empty();
         if (term.isModelGroup()) {
             attributes = Arrays.stream(term.asModelGroup().getChildren())
                     .map(XSParticle::getTerm)
@@ -78,7 +81,9 @@ public class SchemaParserService implements ParserService {
         return attributes;
     }
 
-    private static Attribute parseAttribute(XSElementDecl decl) {
-        return new Attribute(decl.getName(), DataType.valueOf(decl.getType().getName()));
+    private static Model.Attribute parseAttribute(XSElementDecl decl) {
+        String name = decl.getName();
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(name));
+        return new Model.Attribute(name, DataType.valueOf(decl.getType().getName()));
     }
 }

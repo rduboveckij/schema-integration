@@ -1,5 +1,8 @@
 package ntu.asu.rduboveckij.model.external;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
 import java.util.Optional;
 
 /**
@@ -28,6 +31,7 @@ public abstract class DataType extends AbstractName {
     }
 
     public static DataType valueOf(String name) {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(name));
         Optional<PrimitiveEnum> type = PrimitiveEnum.of(name);
         if(type.isPresent()) return new PrimitiveType(type.get());
         return new ComplexType(name);

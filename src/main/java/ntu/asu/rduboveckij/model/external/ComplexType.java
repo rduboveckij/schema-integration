@@ -7,17 +7,17 @@ package ntu.asu.rduboveckij.model.external;
 public class ComplexType extends DataType {
     public static final String ANY_TYPE = "anyType";
 
-    private Element element;
+    private Model.Element element;
 
     public ComplexType(String name) {
         super(name);
     }
 
-    public Element getElement() {
+    public Model.Element getElement() {
         return element;
     }
 
-    public void setElement(Element element) {
+    public void setElement(Model.Element element) {
         this.element = element;
     }
 

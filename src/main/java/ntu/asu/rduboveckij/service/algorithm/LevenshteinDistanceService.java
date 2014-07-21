@@ -1,11 +1,12 @@
-package ntu.asu.rduboveckij.service;
+package ntu.asu.rduboveckij.service.algorithm;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import ntu.asu.rduboveckij.api.DistanceService;
-import org.springframework.beans.factory.annotation.Value;
+import ntu.asu.rduboveckij.api.algorithm.DistanceService;
+import ntu.asu.rduboveckij.api.settings.AlgorithmSettings;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.stream.IntStream;
 
 /**
@@ -14,14 +15,8 @@ import java.util.stream.IntStream;
  */
 @Service
 public class LevenshteinDistanceService implements DistanceService {
-    @Value("#{environment['distance.levenshtein.replaceCost']}")
-    public int replaceCost;
-    @Value("#{environment['distance.levenshtein.replaceCaseCost']}")
-    public int replaceCaseCost;
-    @Value("#{environment['distance.levenshtein.insertCost']}")
-    public int insertCost;
-    @Value("#{environment['distance.levenshtein.removeCost']}")
-    public int removeCost;
+    @Inject
+    private AlgorithmSettings settings;
 
     @Override
     public int distance(String first, String second) {
@@ -30,6 +25,9 @@ public class LevenshteinDistanceService implements DistanceService {
     }
 
     private int getLevenshteinDistance(String first, String second) {
+        int insertCost = settings.getInsertCost();
+        int removeCost = settings.getRemoveCost();
+
         int n = first.length() + 1, m = second.length() + 1;
         int[][] d = new int[m][n];
 
@@ -48,6 +46,16 @@ public class LevenshteinDistanceService implements DistanceService {
     }
 
     private int diff(char first, char second) {
-        return first == second ? 0 : Character.toLowerCase(first) == Character.toLowerCase(second) ? replaceCaseCost : replaceCost;
+        return first == second ? 0 : Character.toLowerCase(first) == Character.toLowerCase(second) ?
+                settings.getReplaceCaseCost() : settings.getReplaceCost();
+    }
+
+    @Override
+    public double similarity(String first, String second) {
+        int maxCost = IntStream.of(settings.getReplaceCost(), settings.getReplaceCaseCost(),
+                settings.getInsertCost(), settings.getRemoveCost())
+                .max()
+                .getAsInt();
+        return 1 - distance(first, second) / (double) (Math.max(first.length(), second.length()) * maxCost);
     }
 }

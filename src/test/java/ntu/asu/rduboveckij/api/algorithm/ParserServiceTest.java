@@ -1,9 +1,9 @@
-package ntu.asu.rduboveckij.api;
+package ntu.asu.rduboveckij.api.algorithm;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.ApplicationConfigurationTest;
-import ntu.asu.rduboveckij.model.external.Element;
+import ntu.asu.rduboveckij.api.algorithm.ParserService;
 import ntu.asu.rduboveckij.model.external.Model;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,8 +22,8 @@ public class ParserServiceTest extends ApplicationConfigurationTest {
     public void testEasy() throws Exception {
         String uri = TEST_FOLDER + "parser-easy.xsd";
         Model expected = new Model(uri, Sets.newHashSet(
-                new Element("user", Sets.newHashSet()),
-                new Element("authorisation", Sets.newHashSet())
+                new Model.Element("user", Sets.newHashSet()),
+                new Model.Element("authorisation", Sets.newHashSet())
         ));
         Assert.assertEquals("Elements did not parse correctly.", expected.getElements(), parserService.parse(uri).getElements());
     }
@@ -31,9 +31,9 @@ public class ParserServiceTest extends ApplicationConfigurationTest {
     @Test
     public void testHard() throws Exception {
         Model model = parserService.parse(TEST_FOLDER + "parser-hard.xsd");
-        Set<Element> elements = model.getElements();
+        Set<Model.Element> elements = model.getElements();
         Assert.assertEquals("It is too much elements.", elements.size(), 2);
-        List<Element> elementList = Lists.newArrayList(elements);
+        List<Model.Element> elementList = Lists.newArrayList(elements);
         Assert.assertEquals("Base object is not same.", elementList.get(0).getExtend(), elementList.get(1).getExtend());
     }
 }

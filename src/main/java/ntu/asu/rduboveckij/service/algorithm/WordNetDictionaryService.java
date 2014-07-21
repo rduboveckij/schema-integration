@@ -1,4 +1,4 @@
-package ntu.asu.rduboveckij.service;
+package ntu.asu.rduboveckij.service.algorithm;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -9,11 +9,13 @@ import net.sf.extjwnl.data.PointerType;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.relationship.RelationshipList;
 import net.sf.extjwnl.dictionary.Dictionary;
-import ntu.asu.rduboveckij.api.DictionaryService;
+import ntu.asu.rduboveckij.api.algorithm.DictionaryService;
+import ntu.asu.rduboveckij.api.settings.AlgorithmSettings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import java.util.Optional;
 
 import static net.sf.extjwnl.data.relationship.RelationshipFinder.findRelationships;
@@ -24,14 +26,13 @@ import static net.sf.extjwnl.data.relationship.RelationshipFinder.findRelationsh
  */
 @Service
 public class WordNetDictionaryService implements DictionaryService {
-    @Value("#{environment['dictionary.wordnet.depth']}")
-    public int depth;
+    @Inject
+    private AlgorithmSettings settings;
 
     private Dictionary dictionary;
 
     @PostConstruct
     public void init() throws JWNLException {
-        Preconditions.checkArgument(depth < 1);
         dictionary = Dictionary.getDefaultResourceInstance();
     }
 
@@ -62,8 +63,9 @@ public class WordNetDictionaryService implements DictionaryService {
             Synset sourceSynset = start.getSenses().get(0);
             Synset targetSynset = end.getSenses().get(0);
             PointerType type = PointerType.SIMILAR_TO;
-            return depth == 0 ? findRelationships(sourceSynset, targetSynset, type) :
-                    findRelationships(sourceSynset, targetSynset, type, depth);
+            int wordNetDepth = settings.getWordNetDepth();
+            return wordNetDepth == 0 ? findRelationships(sourceSynset, targetSynset, type) :
+                    findRelationships(sourceSynset, targetSynset, type, wordNetDepth);
         } catch (CloneNotSupportedException | JWNLException e) {
             throw new RuntimeException(e);
         }

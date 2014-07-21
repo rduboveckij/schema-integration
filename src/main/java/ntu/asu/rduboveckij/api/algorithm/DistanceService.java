@@ -1,4 +1,4 @@
-package ntu.asu.rduboveckij.api;
+package ntu.asu.rduboveckij.api.algorithm;
 
 /**
  * @author andrus.god
@@ -6,4 +6,6 @@ package ntu.asu.rduboveckij.api;
  */
 public interface DistanceService {
     int distance(String first, String second);
+
+    double similarity(String first, String second);
 }

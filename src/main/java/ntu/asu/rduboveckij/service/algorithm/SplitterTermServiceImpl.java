@@ -1,10 +1,7 @@
-package ntu.asu.rduboveckij.service;
+package ntu.asu.rduboveckij.service.algorithm;
 
 import com.google.common.base.Splitter;
-import ntu.asu.rduboveckij.api.SplitterTermService;
-import ntu.asu.rduboveckij.model.external.Element;
-import ntu.asu.rduboveckij.model.internal.AttributeSplit;
-import ntu.asu.rduboveckij.model.internal.ElementSplit;
+import ntu.asu.rduboveckij.api.algorithm.SplitterTermService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

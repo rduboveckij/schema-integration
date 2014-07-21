@@ -1,4 +1,4 @@
-package ntu.asu.rduboveckij.api;
+package ntu.asu.rduboveckij.api.algorithm;
 
 import java.util.List;
 
