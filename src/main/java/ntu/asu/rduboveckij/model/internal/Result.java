@@ -52,6 +52,7 @@ public abstract class Result<T extends AbstractName> {
 
         Result result = (Result) o;
 
+        if (Double.compare(result.score, score) != 0) return false;
         if (source != null ? !source.equals(result.source) : result.source != null) return false;
         if (target != null ? !target.equals(result.target) : result.target != null) return false;
 
@@ -60,8 +61,12 @@ public abstract class Result<T extends AbstractName> {
 
     @Override
     public int hashCode() {
-        int result = source != null ? source.hashCode() : 0;
+        int result;
+        long temp;
+        result = source != null ? source.hashCode() : 0;
         result = 31 * result + (target != null ? target.hashCode() : 0);
+        temp = Double.doubleToLongBits(score);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 

@@ -1,13 +1,18 @@
 package ntu.asu.rduboveckij.service.similarity;
 
+import com.google.common.collect.Sets;
+import ntu.asu.rduboveckij.util.CommonUtils;
 import ntu.asu.rduboveckij.api.algorithm.DistanceService;
 import ntu.asu.rduboveckij.api.settings.SimilaritySettings;
 import ntu.asu.rduboveckij.api.similarity.SemanticSimilarityService;
+import ntu.asu.rduboveckij.util.Pair;
+import ntu.asu.rduboveckij.model.external.AbstractName;
 import ntu.asu.rduboveckij.model.internal.Result;
 import ntu.asu.rduboveckij.model.internal.Split;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,20 +31,28 @@ public class SemanticSimilarityServiceImpl implements SemanticSimilarityService 
 
     @Override
     public Result.Element similarity(Split.Element source, Split.Element target) {
-        double score = calcAverageBestDistance(source.getNames(), target.getNames());
-        Set<Result.Attribute> attributes = source.getAttributes()
+        double elementScore = calcAverageBestDistance(source.getNames(), target.getNames());
+        Set<Result.Attribute> notFiltered = source.getAttributes()
                 .parallelStream()
                 .flatMap(sa -> target.getAttributes().parallelStream()
                         .map(ta -> similarity(sa, ta)))
                 .collect(Collectors.toSet());
-        // attributes
-        return new Result.Element(source.getParent(), target.getParent(), score, attributes);
+        Set<Result.Attribute> attributes = similarityFilterResult(notFiltered);
+        double attributeScore = attributes.stream()
+                .mapToDouble(Result::getScore)
+                .average().getAsDouble();
+
+        double resultScore = CommonUtils.normal(Pair.of(1.0, elementScore), Pair.of(settings.getSemanticAttributeFactor(), attributeScore));
+        return new Result.Element(source.getParent(), target.getParent(), resultScore, attributes);
     }
 
     private <T extends Result> Set<T> similarityFilterResult(Set<T> results) {
-
-        //results.parallelStream().sorted(result -> result.getScore() >);
-        return null;
+        Set<AbstractName> ignored = Sets.newHashSet();
+        return results.stream()
+                .sorted((r1, r2) -> Double.compare(r1.getScore(), r2.getScore()))
+                .filter(result -> !ignored.contains(result.getSource()) && !ignored.contains(result.getTarget()))
+                .peek(result -> ignored.addAll(Arrays.asList(result.getSource(), result.getTarget())))
+                .collect(Collectors.toSet());
     }
 
     private double calcAverageBestDistance(List<String> sourceNames, List<String> targetNames) {

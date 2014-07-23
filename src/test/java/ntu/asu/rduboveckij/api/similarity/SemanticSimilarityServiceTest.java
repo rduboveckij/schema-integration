@@ -2,11 +2,14 @@ package ntu.asu.rduboveckij.api.similarity;
 
 import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.ApplicationConfigurationTest;
+import ntu.asu.rduboveckij.api.settings.SimilaritySettings;
 import ntu.asu.rduboveckij.model.external.DataType;
 import ntu.asu.rduboveckij.model.external.Model;
 import ntu.asu.rduboveckij.model.external.PrimitiveEnum;
 import ntu.asu.rduboveckij.model.internal.Result;
 import ntu.asu.rduboveckij.model.internal.Split;
+import ntu.asu.rduboveckij.util.CommonUtils;
+import ntu.asu.rduboveckij.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,6 +17,8 @@ import javax.inject.Inject;
 import java.util.Arrays;
 
 public class SemanticSimilarityServiceTest extends ApplicationConfigurationTest {
+    @Inject
+    private SimilaritySettings settings;
     @Inject
     private SemanticSimilarityService semanticSimilarityService;
 
@@ -29,7 +34,8 @@ public class SemanticSimilarityServiceTest extends ApplicationConfigurationTest 
         Split.Element targetSplit = new Split.Element(targetElem, Arrays.asList("customer"),
                 Sets.newHashSet(new Split.Attribute(targetAttr, Arrays.asList("customer", "id"))));
 
-        Result.Element expectedElem = new Result.Element(sourceElem, targetElem, 2, Sets.newHashSet());
-        //Assert.assertEquals(expectedElem, semanticSimilarityService.similarity(sourceSplit, targetSplit));
+        double resultScore = CommonUtils.normal(Pair.of(1.0, 0.375), Pair.of(settings.getSemanticAttributeFactor(), 0.75));
+        Result.Element expectedElem = new Result.Element(sourceElem, targetElem, resultScore, Sets.newHashSet());
+        Assert.assertEquals(expectedElem, semanticSimilarityService.similarity(sourceSplit, targetSplit));
     }
 }
