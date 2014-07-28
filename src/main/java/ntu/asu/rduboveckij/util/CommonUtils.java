@@ -1,12 +1,13 @@
 package ntu.asu.rduboveckij.util;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.model.external.AbstractName;
 import ntu.asu.rduboveckij.model.internal.Result;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Set;
+import java.util.Spliterators;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
@@ -14,12 +15,15 @@ import java.util.concurrent.ForkJoinTask;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @author andrus.god
  * @since 7/23/2014
  */
 public final class CommonUtils {
+    public static final String SPACE_DELIMITER = " ";
+
     private CommonUtils() {
         throw new RuntimeException("This class is util");
     }
@@ -48,7 +52,11 @@ public final class CommonUtils {
     }
 
     public static String spaceJoin(Iterable<? extends CharSequence> elements) {
-        return String.join(" ", elements);
+        return String.join(SPACE_DELIMITER, elements);
+    }
+
+    public static Stream<String> spaceSplit(String element) {
+        return StreamSupport.stream(Splitter.on(SPACE_DELIMITER).split(element).spliterator(), false);
     }
 
     public static <T extends Result> Set<T> similarityFilter(Set<T> results) {

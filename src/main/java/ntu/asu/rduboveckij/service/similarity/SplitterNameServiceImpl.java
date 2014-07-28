@@ -12,11 +12,9 @@ import ntu.asu.rduboveckij.util.CommonUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * @author andrus.god
@@ -42,27 +40,23 @@ public class SplitterNameServiceImpl implements SplitterNameService {
     }
 
     private List<String> findBestCombine(List<String> names) {
-        List<String> combines = Lists.newArrayList(), notCombines = Lists.newCopyOnWriteArrayList(names);
+        List<String> combines = Lists.newArrayList(), notCombines = Lists.newArrayList(names);
         for (int level = notCombines.size(); level != 0 && !notCombines.isEmpty(); level--) {
-            final int nextLevel = level - 1;
-            notCombines = Lists.partition(notCombines, level)
-                    .parallelStream()
-                    .filter(part -> part.size() >= nextLevel)
-                    .flatMap(part -> {
-                        String name = CommonUtils.spaceJoin(part);
-                        boolean isContain = dictionaryService.isContain(name);
-                        if (isContain) combines.add(name);
-                        return isContain ? Stream.empty() : part.stream();
-                    })
-                    .collect(Collectors.toList());
+            List<String> currents = generation(notCombines, level);
+            combines.addAll(currents);
+            notCombines.removeAll(currents.parallelStream()
+                    .flatMap(CommonUtils::spaceSplit)
+                    .collect(Collectors.toList()));
         }
         return Lists.newArrayList(Iterables.concat(combines, notCombines));
     }
 
-    private static List<String> generation(List<String> items, int level) {
+    private List<String> generation(List<String> items, int level) {
         return IntStream.rangeClosed(level, items.size())
+                .parallel()
                 .mapToObj(i -> items.subList(i - level, i))
                 .map(CommonUtils::spaceJoin)
+                .filter(dictionaryService::isContain)
                 .collect(Collectors.toList());
     }
 }
