@@ -12,12 +12,23 @@ import org.springframework.stereotype.Component;
 public class SimilaritySettingsImpl implements SimilaritySettings {
     @Value("#{environment['similarity.semantic.attribute']}")
     private double semanticAttributeFactor;
+    @Value("#{environment['similarity.dictionary']}")
+    private double dictionaryFactor;
 
+    @Override
     public double getSemanticAttributeFactor() {
         return semanticAttributeFactor;
     }
 
     public void setSemanticAttributeFactor(double semanticAttributeFactor) {
         this.semanticAttributeFactor = semanticAttributeFactor;
+    }
+    @Override
+    public double getDictionaryFactor() {
+        return dictionaryFactor;
+    }
+
+    public void setDictionaryFactor(double dictionaryFactor) {
+        this.dictionaryFactor = dictionaryFactor;
     }
 }

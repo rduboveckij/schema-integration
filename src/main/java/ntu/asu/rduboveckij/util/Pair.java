@@ -9,7 +9,23 @@ public class Pair<K, V> extends javafx.util.Pair<K, V> {
         super(key, value);
     }
 
+    public boolean isKey() {
+        return getKey() != null;
+    }
+
+    public boolean isValue() {
+        return getValue() != null;
+    }
+
     public static <K, V> Pair<K, V> of(K key, V value) {
         return new Pair<>(key, value);
+    }
+
+    public static <K, V> Pair<K, V> ofKey(K key) {
+        return new Pair<>(key, null);
+    }
+
+    public static <K, V> Pair<K, V> ofValue(V value) {
+        return new Pair<>(null, value);
     }
 }
