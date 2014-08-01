@@ -10,25 +10,35 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SimilaritySettingsImpl implements SimilaritySettings {
-    @Value("#{environment['similarity.semantic.attribute']}")
-    private double semanticAttributeFactor;
-    @Value("#{environment['similarity.dictionary']}")
-    private double dictionaryFactor;
+    @Value("#{environment['similarity.attribute.importance']}")
+    private double importanceAttributeFactor;
+    @Value("#{environment['similarity.dictionary.element']}")
+    private double dictionaryElementFactor;
+    @Value("#{environment['similarity.type.attribute']}")
+    private double dataTypeAttributeFactor;
 
     @Override
-    public double getSemanticAttributeFactor() {
-        return semanticAttributeFactor;
+    public double getImportanceAttributeFactor() {
+        return importanceAttributeFactor;
     }
 
-    public void setSemanticAttributeFactor(double semanticAttributeFactor) {
-        this.semanticAttributeFactor = semanticAttributeFactor;
+    public void setImportanceAttributeFactor(double importanceAttributeFactor) {
+        this.importanceAttributeFactor = importanceAttributeFactor;
     }
     @Override
-    public double getDictionaryFactor() {
-        return dictionaryFactor;
+    public double getDictionaryElementFactor() {
+        return dictionaryElementFactor;
     }
 
-    public void setDictionaryFactor(double dictionaryFactor) {
-        this.dictionaryFactor = dictionaryFactor;
+    public void setDictionaryElementFactor(double dictionaryElementFactor) {
+        this.dictionaryElementFactor = dictionaryElementFactor;
+    }
+    @Override
+    public double getDataTypeAttributeFactor() {
+        return dataTypeAttributeFactor;
+    }
+
+    public void setDataTypeAttributeFactor(double dataTypeAttributeFactor) {
+        this.dataTypeAttributeFactor = dataTypeAttributeFactor;
     }
 }

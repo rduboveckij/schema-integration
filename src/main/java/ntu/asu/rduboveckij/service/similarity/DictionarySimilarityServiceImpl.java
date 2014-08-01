@@ -2,6 +2,7 @@ package ntu.asu.rduboveckij.service.similarity;
 
 import ntu.asu.rduboveckij.api.algorithm.DictionaryService;
 import ntu.asu.rduboveckij.api.similarity.DictionarySimilarityService;
+import ntu.asu.rduboveckij.util.CommonUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -18,8 +19,8 @@ public class DictionarySimilarityServiceImpl extends AbstractSimilarity implemen
 
     @Override
     protected double getScore(String firstName, String secondName) {
-        if (Objects.equals(firstName, secondName)) return MAX_SCORE;
-        if (dictionaryService.isSynonym(firstName, secondName)) return settings.getDictionaryFactor();
-        return MIN_SCORE;
+        if (Objects.equals(firstName, secondName)) return CommonUtils.MAX_SCORE;
+        if (dictionaryService.isSynonym(firstName, secondName)) return settings.getDictionaryElementFactor();
+        return CommonUtils.MIN_SCORE;
     }
 }

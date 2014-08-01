@@ -18,8 +18,6 @@ import java.util.stream.DoubleStream;
  * @since 7/23/2014
  */
 public abstract class AbstractSimilarity implements SimilarityService {
-    public static final int MAX_SCORE = 1;
-    public static final int MIN_SCORE = 0;
     @Inject
     protected SimilaritySettings settings;
 
@@ -29,14 +27,14 @@ public abstract class AbstractSimilarity implements SimilarityService {
         Set<Result.Attribute> notFiltered = source.getAttributes()
                 .parallelStream()
                 .flatMap(sa -> target.getAttributes().parallelStream()
-                        .map(ta -> similarity(sa, ta)))
+                        .map(ta -> similarityAttribute(sa, ta)))
                 .collect(Collectors.toSet());
         Set<Result.Attribute> attributes = CommonUtils.similarityFilter(notFiltered);
         double attributeScore = attributes.stream()
                 .mapToDouble(Result::getScore)
                 .average().getAsDouble();
 
-        double resultScore = CommonUtils.normal(Pair.of(1.0, elementScore), Pair.of(settings.getSemanticAttributeFactor(), attributeScore));
+        double resultScore = CommonUtils.normal(Pair.of(1.0, elementScore), Pair.of(settings.getImportanceAttributeFactor(), attributeScore));
         return new Result.Element(source.getParent(), target.getParent(), resultScore, attributes);
     }
 
@@ -62,7 +60,7 @@ public abstract class AbstractSimilarity implements SimilarityService {
 
     protected abstract double getScore(String firstName, String secondName);
 
-    private Result.Attribute similarity(Split.Attribute source, Split.Attribute target) {
+    private Result.Attribute similarityAttribute(Split.Attribute source, Split.Attribute target) {
         return new Result.Attribute(source.getParent(), target.getParent(), calcAverageBestDistance(source.getNames(), target.getNames()));
     }
 }

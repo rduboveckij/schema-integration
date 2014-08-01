@@ -23,6 +23,8 @@ import java.util.stream.StreamSupport;
  */
 public final class CommonUtils {
     public static final String SPACE_DELIMITER = " ";
+    public static final double MAX_SCORE = 1d;
+    public static final double MIN_SCORE = 0d;
 
     private CommonUtils() {
         throw new RuntimeException("This class is util");
@@ -30,14 +32,14 @@ public final class CommonUtils {
 
     @SafeVarargs
     public static double normal(Pair<Double, Double>... factorValues) {
-        double top = Stream.of(factorValues)
+        double bottom = Stream.of(factorValues)
                 .mapToDouble(factor -> factor.getKey())
                 .average()
                 .getAsDouble();
-        return top / Stream.of(factorValues)
+        return Stream.of(factorValues)
                 .mapToDouble(val -> val.getKey() * val.getValue())
                 .average()
-                .getAsDouble();
+                .getAsDouble() / bottom;
     }
 
     public static <T> Supplier<T> atPoll(Callable<T> task) {

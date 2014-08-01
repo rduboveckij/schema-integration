@@ -5,7 +5,10 @@ package ntu.asu.rduboveckij.api.settings;
  * @since 7/20/2014
  */
 public interface SimilaritySettings {
-    double getSemanticAttributeFactor();
 
-    double getDictionaryFactor();
+    double getImportanceAttributeFactor();
+
+    double getDictionaryElementFactor();
+
+    double getDataTypeAttributeFactor();
 }
