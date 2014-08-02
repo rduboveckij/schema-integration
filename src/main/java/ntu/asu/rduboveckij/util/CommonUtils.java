@@ -2,12 +2,11 @@ package ntu.asu.rduboveckij.util;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
-import ntu.asu.rduboveckij.model.external.AbstractName;
+import ntu.asu.rduboveckij.model.external.AbstractModelItem;
 import ntu.asu.rduboveckij.model.internal.Result;
 
 import java.util.Arrays;
 import java.util.Set;
-import java.util.Spliterators;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
@@ -61,8 +60,8 @@ public final class CommonUtils {
         return StreamSupport.stream(Splitter.on(SPACE_DELIMITER).split(element).spliterator(), false);
     }
 
-    public static <T extends Result> Set<T> similarityFilter(Set<T> results) {
-        Set<AbstractName> ignored = Sets.newHashSet();
+    public static <P extends AbstractModelItem, T extends Result<P>> Set<T> similarityFilter(Set<T> results) {
+        Set<P> ignored = Sets.newHashSet();
         return results.stream()
                 .sorted((r1, r2) -> Double.compare(r1.getScore(), r2.getScore()))
                 .filter(result -> !ignored.contains(result.getSource()) && !ignored.contains(result.getTarget()))

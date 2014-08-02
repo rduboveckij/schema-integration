@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import ntu.asu.rduboveckij.api.algorithm.DictionaryService;
 import ntu.asu.rduboveckij.api.algorithm.SplitterTermService;
 import ntu.asu.rduboveckij.api.similarity.SplitterNameService;
-import ntu.asu.rduboveckij.model.external.AbstractName;
+import ntu.asu.rduboveckij.model.external.AbstractModelItem;
 import ntu.asu.rduboveckij.model.external.Model;
 import ntu.asu.rduboveckij.model.internal.Split;
 import ntu.asu.rduboveckij.util.CommonUtils;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -28,6 +29,13 @@ public class SplitterNameServiceImpl implements SplitterNameService {
     private DictionaryService dictionaryService;
 
     @Override
+    public Set<Split.Element> split(Model model) {
+        return model.getElements().parallelStream()
+                .map(this::split)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
     public Split.Element split(Model.Element element) {
         return new Split.Element(element, splitting(element), element.getAttributes()
                 .parallelStream()
@@ -35,7 +43,7 @@ public class SplitterNameServiceImpl implements SplitterNameService {
                 .collect(Collectors.toSet()));
     }
 
-    private List<String> splitting(AbstractName object) {
+    private List<String> splitting(AbstractModelItem object) {
         return findBestCombine(splitterTermService.split(object.getName()));
     }
 

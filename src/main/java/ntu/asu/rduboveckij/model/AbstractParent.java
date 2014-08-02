@@ -1,5 +1,7 @@
 package ntu.asu.rduboveckij.model;
 
+import java.util.Objects;
+
 /**
  * @author andrus.god
  * @since 7/20/2014
@@ -11,7 +13,7 @@ public abstract class AbstractParent<P> {
     }
 
     protected AbstractParent(P parent) {
-        this.parent = parent;
+        setParent(parent);
     }
 
     public P getParent() {
@@ -19,7 +21,7 @@ public abstract class AbstractParent<P> {
     }
 
     public void setParent(P parent) {
-        this.parent = parent;
+        this.parent = Objects.requireNonNull(parent);
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * @author andrus.god
  * @since 16.06.2014
  */
-public class Model extends AbstractName<Void> {
+public final class Model extends Name {
     private Set<Element> elements = Sets.newHashSet();
 
     public Model(String name, Set<Element> elements) {
@@ -27,7 +27,7 @@ public class Model extends AbstractName<Void> {
         this.elements = elements;
     }
 
-    public static class Element extends AbstractName<Model> {
+    public final static class Element extends AbstractModelItem<Model> {
         private Set<Attribute> attributes = Sets.newHashSet();
         private Element extend;
 
@@ -55,7 +55,7 @@ public class Model extends AbstractName<Void> {
         }
     }
 
-    public static class Attribute extends AbstractName<Element> {
+    public final static class Attribute extends AbstractModelItem<Element> {
         private DataType type;
 
         public Attribute(String name, DataType type) {

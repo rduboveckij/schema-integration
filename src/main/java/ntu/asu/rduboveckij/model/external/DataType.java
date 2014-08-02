@@ -10,7 +10,7 @@ import java.util.Optional;
  * @author andrus.god
  * @since 16.06.2014
  */
-public abstract class DataType extends AbstractName {
+public abstract class DataType extends Name {
     public DataType(String name) {
         super(name);
     }

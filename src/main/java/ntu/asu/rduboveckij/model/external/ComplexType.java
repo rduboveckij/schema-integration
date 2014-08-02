@@ -4,7 +4,7 @@ package ntu.asu.rduboveckij.model.external;
  * @author andrus.god
  * @since 16.06.2014
  */
-public class ComplexType extends DataType {
+public final class ComplexType extends DataType {
     public static final String ANY_TYPE = "anyType";
 
     private Model.Element element;

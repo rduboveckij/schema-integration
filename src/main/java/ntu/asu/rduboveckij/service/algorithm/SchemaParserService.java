@@ -7,7 +7,9 @@ import com.google.common.collect.Sets;
 import com.sun.xml.xsom.*;
 import com.sun.xml.xsom.parser.XSOMParser;
 import ntu.asu.rduboveckij.api.algorithm.ParserService;
-import ntu.asu.rduboveckij.model.external.*;
+import ntu.asu.rduboveckij.model.external.ComplexType;
+import ntu.asu.rduboveckij.model.external.DataType;
+import ntu.asu.rduboveckij.model.external.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,8 @@ public class SchemaParserService implements ParserService {
 
     @Override
     public Model parse(String uri) throws SAXException {
-        Preconditions.checkArgument(new File(uri).exists());
+        if (!new File(uri).exists()) throw new SAXException("File is not exists by uri - " + uri);
+
         XSOMParser parser = new XSOMParser();
         parser.parse(uri);
         XSSchema schema = parser.getResult().getSchema(1);
@@ -63,7 +66,7 @@ public class SchemaParserService implements ParserService {
         Model.Element element = new Model.Element(name, parseAttribute(term).collect(Collectors.toSet()));
 
         XSType base = type.getBaseType();
-        if(!ComplexType.ANY_TYPE.equals(base.getName()))
+        if (!ComplexType.ANY_TYPE.equals(base.getName()))
             // todo: warning use stack
             element.setExtend(parseElement(base.asComplexType()));
         return element;

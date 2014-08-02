@@ -4,21 +4,17 @@ import ntu.asu.rduboveckij.model.AbstractParent;
 
 /**
  * @author andrus.god
- * @since 16.06.2014
+ * @since 8/2/2014
  */
-public abstract class AbstractName<P> extends AbstractParent<P> {
-    private String name;
+public abstract class AbstractModelItem<P> extends AbstractParent<P> {
+    private Name name;
 
-    protected AbstractName(String name) {
-        this.name = name;
+    protected AbstractModelItem(String name) {
+        this.name = new Name(name);
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return name.name;
     }
 
     @Override
@@ -27,7 +23,7 @@ public abstract class AbstractName<P> extends AbstractParent<P> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        AbstractName that = (AbstractName) o;
+        AbstractModelItem that = (AbstractModelItem) o;
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
 

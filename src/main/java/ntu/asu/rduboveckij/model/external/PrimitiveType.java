@@ -4,7 +4,7 @@ package ntu.asu.rduboveckij.model.external;
  * @author andrus.god
  * @since 16.06.2014
  */
-public class PrimitiveType extends DataType {
+public final class PrimitiveType extends DataType {
     private PrimitiveEnum primitiveEnum;
 
     public PrimitiveType(PrimitiveEnum primitiveEnum) {

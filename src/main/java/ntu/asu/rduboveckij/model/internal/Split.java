@@ -48,7 +48,7 @@ public abstract class Split<P> extends AbstractParent<P> {
         return result;
     }
 
-    public static class Element extends Split<Model.Element> {
+    public final static class Element extends Split<Model.Element> {
         private Set<Attribute> attributes = Sets.newHashSet();
 
         public Element(Model.Element parent, List<String> names, Set<Attribute> attributes) {
@@ -65,7 +65,7 @@ public abstract class Split<P> extends AbstractParent<P> {
         }
     }
 
-    public static class Attribute extends Split<Model.Attribute> {
+    public final static class Attribute extends Split<Model.Attribute> {
         public Attribute(Model.Attribute parent, List<String> names) {
             super(parent, names);
         }
