@@ -31,14 +31,12 @@ public final class CommonUtils {
 
     @SafeVarargs
     public static double normal(Pair<Double, Double>... factorValues) {
-        double bottom = Stream.of(factorValues)
-                .mapToDouble(factor -> factor.getKey())
-                .average()
-                .getAsDouble();
         return Stream.of(factorValues)
                 .mapToDouble(val -> val.getKey() * val.getValue())
-                .average()
-                .getAsDouble() / bottom;
+                .sum() / Stream.of(factorValues)
+                .filter(factor -> factor.getValue() != 0d)
+                .mapToDouble(factor -> factor.getKey())
+                .sum();
     }
 
     public static <T> Supplier<T> atPoll(Callable<T> task) {
@@ -67,5 +65,9 @@ public final class CommonUtils {
                 .filter(result -> !ignored.contains(result.getSource()) && !ignored.contains(result.getTarget()))
                 .peek(result -> ignored.addAll(Arrays.asList(result.getSource(), result.getTarget())))
                 .collect(Collectors.toSet());
+    }
+
+    public static double booleanToDouble(boolean b) {
+        return b ? 1d : 0d;
     }
 }

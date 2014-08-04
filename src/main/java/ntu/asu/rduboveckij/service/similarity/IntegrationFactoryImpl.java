@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 import javax.inject.Inject;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * @author andrus.god
@@ -54,7 +55,11 @@ public class IntegrationFactoryImpl implements IntegrationFactory {
 
         @Override
         public double metricCompleteness() {
-            return 0;
+            return Stream.concat(sourceElements.stream(), targetElements.stream())
+                    .parallel()
+                    .mapToDouble(dictionarySimilarityService::metricCompleteness)
+                    .average()
+                    .getAsDouble();
         }
     }
 }

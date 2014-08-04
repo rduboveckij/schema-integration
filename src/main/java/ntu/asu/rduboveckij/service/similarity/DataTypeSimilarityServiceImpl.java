@@ -35,7 +35,7 @@ public class DataTypeSimilarityServiceImpl implements DataTypeSimilarityService 
                 .mapToDouble(Result::getScore)
                 .average().getAsDouble();
 
-        double resultScore = CommonUtils.normal(Pair.of(CommonUtils.MAX_SCORE, attributeScore));
+        double resultScore = CommonUtils.normal(Pair.ofOne(attributeScore));
         return new Result.Element(source.getParent(), target.getParent(), resultScore, attributes);
     }
 

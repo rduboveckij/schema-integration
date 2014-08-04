@@ -16,6 +16,14 @@ public class SimilaritySettingsImpl implements SimilaritySettings {
     private double dictionaryElementFactor;
     @Value("#{environment['similarity.type.attribute']}")
     private double dataTypeAttributeFactor;
+    @Value("#{environment['similarity.semantic']}")
+    private double semanticFactor;
+    @Value("#{environment['similarity.dictionary']}")
+    private double dictionaryFactor;
+    @Value("#{environment['similarity.type']}")
+    private double dataTypeFactor;
+    @Value("#{environment['similarity.threshold']}")
+    private double thresholdFactor;
 
     @Override
     public double getImportanceAttributeFactor() {
@@ -25,6 +33,7 @@ public class SimilaritySettingsImpl implements SimilaritySettings {
     public void setImportanceAttributeFactor(double importanceAttributeFactor) {
         this.importanceAttributeFactor = importanceAttributeFactor;
     }
+
     @Override
     public double getDictionaryElementFactor() {
         return dictionaryElementFactor;
@@ -33,6 +42,7 @@ public class SimilaritySettingsImpl implements SimilaritySettings {
     public void setDictionaryElementFactor(double dictionaryElementFactor) {
         this.dictionaryElementFactor = dictionaryElementFactor;
     }
+
     @Override
     public double getDataTypeAttributeFactor() {
         return dataTypeAttributeFactor;
@@ -40,5 +50,37 @@ public class SimilaritySettingsImpl implements SimilaritySettings {
 
     public void setDataTypeAttributeFactor(double dataTypeAttributeFactor) {
         this.dataTypeAttributeFactor = dataTypeAttributeFactor;
+    }
+    @Override
+    public double getSemanticFactor() {
+        return semanticFactor;
+    }
+
+    public void setSemanticFactor(double semanticFactor) {
+        this.semanticFactor = semanticFactor;
+    }
+    @Override
+    public double getDictionaryFactor() {
+        return dictionaryFactor;
+    }
+
+    public void setDictionaryFactor(double dictionaryFactor) {
+        this.dictionaryFactor = dictionaryFactor;
+    }
+    @Override
+    public double getDataTypeFactor() {
+        return dataTypeFactor;
+    }
+
+    public void setDataTypeFactor(double dataTypeFactor) {
+        this.dataTypeFactor = dataTypeFactor;
+    }
+    @Override
+    public double getThresholdFactor() {
+        return thresholdFactor;
+    }
+
+    public void setThresholdFactor(double thresholdFactor) {
+        this.thresholdFactor = thresholdFactor;
     }
 }

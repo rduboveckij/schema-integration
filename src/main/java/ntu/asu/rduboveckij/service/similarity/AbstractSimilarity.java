@@ -34,7 +34,7 @@ public abstract class AbstractSimilarity implements SimilarityService {
                 .mapToDouble(Result::getScore)
                 .average().getAsDouble();
 
-        double resultScore = CommonUtils.normal(Pair.of(1.0, elementScore), Pair.of(settings.getImportanceAttributeFactor(), attributeScore));
+        double resultScore = CommonUtils.normal(Pair.ofOne(elementScore), Pair.of(settings.getImportanceAttributeFactor(), attributeScore));
         return new Result.Element(source.getParent(), target.getParent(), resultScore, attributes);
     }
 
