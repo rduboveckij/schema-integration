@@ -25,10 +25,7 @@ public class DataTypeSimilarityServiceImpl implements DataTypeSimilarityService 
 
     @Override
     public Result.Element similarity(Split.Element source, Split.Element target) {
-        Set<Result.Attribute> notFiltered = source.getAttributes()
-                .parallelStream()
-                .flatMap(sa -> target.getAttributes().parallelStream()
-                        .map(ta -> similarityAttribute(sa, ta)))
+        Set<Result.Attribute> notFiltered = CommonUtils.eachStream(source.getAttributes(), target.getAttributes(), this::similarityAttribute)
                 .collect(Collectors.toSet());
         Set<Result.Attribute> attributes = CommonUtils.similarityFilter(notFiltered);
         double attributeScore = attributes.stream()

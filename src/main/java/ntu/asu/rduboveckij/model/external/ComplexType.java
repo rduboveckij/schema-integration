@@ -1,24 +1,37 @@
 package ntu.asu.rduboveckij.model.external;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author andrus.god
  * @since 16.06.2014
  */
 public final class ComplexType extends DataType {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComplexType.class);
     public static final String ANY_TYPE = "anyType";
 
-    private Model.Element element;
+    private final Model.Element element;
 
     public ComplexType(String name) {
+        this(name, null);
+    }
+
+    public ComplexType(String name, Model.Element element) {
         super(name);
+        this.element = element;
     }
 
     public Model.Element getElement() {
         return element;
     }
 
-    public void setElement(Model.Element element) {
-        this.element = element;
+    public ComplexType setElement(Model.Element element) {
+        if (element == null) {
+            LOGGER.warn("Data type " + getName() + " is not found!");
+            return this;
+        }
+        return new ComplexType(getName(), element);
     }
 
     @Override
@@ -29,9 +42,7 @@ public final class ComplexType extends DataType {
 
         ComplexType that = (ComplexType) o;
 
-        if (element != null ? !element.equals(that.element) : that.element != null) return false;
-
-        return true;
+        return !(element != null ? !element.equals(that.element) : that.element != null);
     }
 
     @Override

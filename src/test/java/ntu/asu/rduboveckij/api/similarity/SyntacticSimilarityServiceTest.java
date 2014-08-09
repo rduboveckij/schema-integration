@@ -11,17 +11,17 @@ import org.junit.Test;
 
 import javax.inject.Inject;
 
-public class SemanticSimilarityServiceTest extends ApplicationConfigurationTest {
+public class SyntacticSimilarityServiceTest extends ApplicationConfigurationTest {
     @Inject
     private SimilaritySettings settings;
     @Inject
-    private SemanticSimilarityService semanticSimilarityService;
+    private SyntacticSimilarityService syntacticSimilarityService;
 
     @Test
     public void testSimilarity() throws Exception {
         double resultScore = CommonUtils.normal(Pair.ofOne(0.375), Pair.of(settings.getImportanceAttributeFactor(), 0.75));
         Result.Element expectedElem = new Result.Element(SPLIT_USER_BASKET.getParent(), SPLIT_CUSTOMER.getParent(), resultScore, Sets.newHashSet());
-        Result.Element resultElem = semanticSimilarityService.similarity(SPLIT_USER_BASKET, SPLIT_CUSTOMER);
+        Result.Element resultElem = syntacticSimilarityService.similarity(SPLIT_USER_BASKET, SPLIT_CUSTOMER);
         Assert.assertEquals(expectedElem, resultElem);
         Assert.assertEquals(expectedElem.getScore(), resultElem.getScore(), 0.001);
     }

@@ -5,7 +5,7 @@ package ntu.asu.rduboveckij.model.external;
  * @since 16.06.2014
  */
 public final class PrimitiveType extends DataType {
-    private PrimitiveEnum primitiveEnum;
+    private final PrimitiveEnum primitiveEnum;
 
     public PrimitiveType(PrimitiveEnum primitiveEnum) {
         super(primitiveEnum.getName());
@@ -16,10 +16,6 @@ public final class PrimitiveType extends DataType {
         return primitiveEnum;
     }
 
-    public void setPrimitiveEnum(PrimitiveEnum primitiveEnum) {
-        this.primitiveEnum = primitiveEnum;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -28,15 +24,13 @@ public final class PrimitiveType extends DataType {
 
         PrimitiveType that = (PrimitiveType) o;
 
-        if (primitiveEnum != that.primitiveEnum) return false;
-
-        return true;
+        return primitiveEnum == that.primitiveEnum;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (primitiveEnum != null ? primitiveEnum.hashCode() : 0);
+        result = 31 * result + (primitiveEnum.hashCode());
         return result;
     }
 }

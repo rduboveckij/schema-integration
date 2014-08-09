@@ -3,7 +3,6 @@ package ntu.asu.rduboveckij.api.algorithm;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.ApplicationConfigurationTest;
-import ntu.asu.rduboveckij.api.algorithm.ParserService;
 import ntu.asu.rduboveckij.model.external.Model;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,8 +21,8 @@ public class ParserServiceTest extends ApplicationConfigurationTest {
     public void testEasy() throws Exception {
         String uri = TEST_FOLDER + "parser-easy.xsd";
         Model expected = new Model(uri, Sets.newHashSet(
-                new Model.Element("user", Sets.newHashSet()),
-                new Model.Element("authorisation", Sets.newHashSet())
+                new Model.Element("user", Sets.newHashSet(), null),
+                new Model.Element("authorisation", Sets.newHashSet(), null)
         ));
         Assert.assertEquals("Elements did not parse correctly.", expected.getElements(), parserService.parse(uri).getElements());
     }

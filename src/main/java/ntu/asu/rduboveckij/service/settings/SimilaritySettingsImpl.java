@@ -16,8 +16,8 @@ public class SimilaritySettingsImpl implements SimilaritySettings {
     private double dictionaryElementFactor;
     @Value("#{environment['similarity.type.attribute']}")
     private double dataTypeAttributeFactor;
-    @Value("#{environment['similarity.semantic']}")
-    private double semanticFactor;
+    @Value("#{environment['similarity.syntactic']}")
+    private double syntacticFactor;
     @Value("#{environment['similarity.dictionary']}")
     private double dictionaryFactor;
     @Value("#{environment['similarity.type']}")
@@ -52,12 +52,12 @@ public class SimilaritySettingsImpl implements SimilaritySettings {
         this.dataTypeAttributeFactor = dataTypeAttributeFactor;
     }
     @Override
-    public double getSemanticFactor() {
-        return semanticFactor;
+    public double getSyntacticFactor() {
+        return syntacticFactor;
     }
 
-    public void setSemanticFactor(double semanticFactor) {
-        this.semanticFactor = semanticFactor;
+    public void setSyntacticFactor(double syntacticFactor) {
+        this.syntacticFactor = syntacticFactor;
     }
     @Override
     public double getDictionaryFactor() {

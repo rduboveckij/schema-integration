@@ -24,16 +24,12 @@ public abstract class AbstractSimilarity implements SimilarityService {
     @Override
     public Result.Element similarity(Split.Element source, Split.Element target) {
         double elementScore = calcAverageBestDistance(source.getNames(), target.getNames());
-        Set<Result.Attribute> notFiltered = source.getAttributes()
-                .parallelStream()
-                .flatMap(sa -> target.getAttributes().parallelStream()
-                        .map(ta -> similarityAttribute(sa, ta)))
+        Set<Result.Attribute> notFiltered = CommonUtils.eachStream(source.getAttributes(), target.getAttributes(), this::similarityAttribute)
                 .collect(Collectors.toSet());
         Set<Result.Attribute> attributes = CommonUtils.similarityFilter(notFiltered);
         double attributeScore = attributes.stream()
                 .mapToDouble(Result::getScore)
                 .average().getAsDouble();
-
         double resultScore = CommonUtils.normal(Pair.ofOne(elementScore), Pair.of(settings.getImportanceAttributeFactor(), attributeScore));
         return new Result.Element(source.getParent(), target.getParent(), resultScore, attributes);
     }

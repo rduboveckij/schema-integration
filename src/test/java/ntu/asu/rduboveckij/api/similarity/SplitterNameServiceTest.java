@@ -3,7 +3,6 @@ package ntu.asu.rduboveckij.api.similarity;
 import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.ApplicationConfigurationTest;
 import ntu.asu.rduboveckij.api.algorithm.DictionaryService;
-import ntu.asu.rduboveckij.api.similarity.SplitterNameService;
 import ntu.asu.rduboveckij.api.algorithm.SplitterTermService;
 import ntu.asu.rduboveckij.model.external.*;
 import ntu.asu.rduboveckij.model.internal.Split;
@@ -12,8 +11,6 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -44,7 +41,7 @@ public class SplitterNameServiceTest extends ApplicationConfigurationTest {
         Mockito.when(dictionaryService.isContain("id")).thenReturn(true);
 
         Model.Attribute attribute = new Model.Attribute(attributeName, DataType.valueOf(PrimitiveEnum.LONG.getName()));
-        Model.Element element = new Model.Element(elementName, Sets.newHashSet(attribute));
+        Model.Element element = new Model.Element(elementName, Sets.newHashSet(attribute), null);
         Split.Attribute expectedAttribute = new Split.Attribute(attribute, Arrays.asList("user", "first name", "id"));
         Split.Element expectedElement = new Split.Element(element, elementNames, Sets.newHashSet(expectedAttribute));
         Assert.assertEquals(expectedElement, splitterNameService.split(element));

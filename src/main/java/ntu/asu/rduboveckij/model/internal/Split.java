@@ -2,10 +2,11 @@ package ntu.asu.rduboveckij.model.internal;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import ntu.asu.rduboveckij.model.AbstractParent;
+import ntu.asu.rduboveckij.model.external.AbstractParent;
 import ntu.asu.rduboveckij.model.external.Model;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -13,19 +14,15 @@ import java.util.Set;
  * @since 7/18/2014
  */
 public abstract class Split<P> extends AbstractParent<P> {
-    private List<String> names = Lists.newArrayList();
+    private final List<String> names;
 
     protected Split(P parent, List<String> names) {
         super(parent);
-        this.names = names;
+        this.names = Objects.requireNonNull(names);
     }
 
     public List<String> getNames() {
         return names;
-    }
-
-    public void setNames(List<String> names) {
-        this.names = names;
     }
 
     @Override
@@ -36,32 +33,24 @@ public abstract class Split<P> extends AbstractParent<P> {
 
         Split that = (Split) o;
 
-        if (names != null ? !names.equals(that.names) : that.names != null) return false;
-
-        return true;
+        return names.equals(that.names);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (names != null ? names.hashCode() : 0);
-        return result;
+        return 31 * super.hashCode() + names.hashCode();
     }
 
     public final static class Element extends Split<Model.Element> {
-        private Set<Attribute> attributes = Sets.newHashSet();
+        private final Set<Attribute> attributes;
 
         public Element(Model.Element parent, List<String> names, Set<Attribute> attributes) {
             super(parent, names);
-            this.attributes = attributes;
+            this.attributes = Objects.requireNonNull(attributes);
         }
 
         public Set<Attribute> getAttributes() {
             return attributes;
-        }
-
-        public void setAttributes(Set<Attribute> attributes) {
-            this.attributes = attributes;
         }
     }
 

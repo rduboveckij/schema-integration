@@ -6,12 +6,13 @@ import ntu.asu.rduboveckij.model.external.AbstractModelItem;
 import ntu.asu.rduboveckij.model.internal.Result;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -58,6 +59,8 @@ public final class CommonUtils {
         return StreamSupport.stream(Splitter.on(SPACE_DELIMITER).split(element).spliterator(), false);
     }
 
+
+
     public static <P extends AbstractModelItem, T extends Result<P>> Set<T> similarityFilter(Set<T> results) {
         Set<P> ignored = Sets.newHashSet();
         return results.stream()
@@ -69,5 +72,13 @@ public final class CommonUtils {
 
     public static double booleanToDouble(boolean b) {
         return b ? 1d : 0d;
+    }
+
+    public static <T, R> Stream<R> eachStream(Collection<T> firsts, Collection<T> seconds, BiFunction<T, T, R> function) {
+        return firsts.parallelStream().flatMap(eachMap(seconds, function));
+    }
+
+    public static <T, R> Function<T, Stream<R>> eachMap(Collection<T> seconds, BiFunction<T, T, R> function) {
+        return first -> seconds.parallelStream().map(second -> function.apply(first, second));
     }
 }

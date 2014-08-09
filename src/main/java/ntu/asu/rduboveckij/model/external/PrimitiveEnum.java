@@ -45,8 +45,8 @@ public enum PrimitiveEnum {
     UNSIGNED_SHORT("unsignedShort", SHORT, UNSIGNED_INT, INT, UNSIGNED_LONG, LONG, NON_POSITIVE_INTEGER, INTEGER, FLOAT, DOUBLE, DECIMAL),
     UNSIGNED_BYTE("unsignedByte", UNSIGNED_SHORT, SHORT, UNSIGNED_INT, INT, UNSIGNED_LONG, LONG, NON_POSITIVE_INTEGER, INTEGER, FLOAT, DOUBLE, DECIMAL);
 
-    private String name;
-    private Set<PrimitiveEnum> castSet;
+    private final String name;
+    private final Set<PrimitiveEnum> castSet;
 
     PrimitiveEnum(String name, PrimitiveEnum... castSet) {
         this.name = name;

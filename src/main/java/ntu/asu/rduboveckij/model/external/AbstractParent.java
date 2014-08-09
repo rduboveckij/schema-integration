@@ -1,4 +1,4 @@
-package ntu.asu.rduboveckij.model;
+package ntu.asu.rduboveckij.model.external;
 
 import java.util.Objects;
 
@@ -13,14 +13,14 @@ public abstract class AbstractParent<P> {
     }
 
     protected AbstractParent(P parent) {
-        setParent(parent);
+        this.parent = Objects.requireNonNull(parent);
     }
 
     public P getParent() {
         return parent;
     }
 
-    public void setParent(P parent) {
+    void setParent(P parent) {
         this.parent = Objects.requireNonNull(parent);
     }
 
@@ -31,9 +31,7 @@ public abstract class AbstractParent<P> {
 
         AbstractParent that = (AbstractParent) o;
 
-        if (parent != null ? !parent.equals(that.parent) : that.parent != null) return false;
-
-        return true;
+        return !(parent != null ? !parent.equals(that.parent) : that.parent != null);
     }
 
     @Override

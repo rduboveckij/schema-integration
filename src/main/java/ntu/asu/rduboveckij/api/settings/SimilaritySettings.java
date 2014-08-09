@@ -11,7 +11,7 @@ public interface SimilaritySettings {
 
     double getDataTypeAttributeFactor();
 
-    double getSemanticFactor();
+    double getSyntacticFactor();
 
     double getDictionaryFactor();
 

@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  */
 @Service
 public class SchemaParserService implements ParserService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaParserService.class);
+
 
     @Override
     public Model parse(String uri) throws SAXException {
@@ -43,19 +43,15 @@ public class SchemaParserService implements ParserService {
                 .parallelStream()
                 .filter(type -> !type.isAbstract())
                 .map(SchemaParserService::parseElement)
-                .collect(Collectors.toMap(Model.Element::getName, Function.<Model.Element>identity()));
+                .collect(Collectors.toConcurrentMap(Model.Element::getName, Function.<Model.Element>identity()));
 
         Set<Model.Element> elements = Sets.newHashSet(mapElements.values());
-        elements.stream()
+        elements.parallelStream()
                 .flatMap(elem -> elem.getAttributes().stream())
                 .map(Model.Attribute::getType)
                 .filter(DataType::isComplex)
                 .map(DataType::asComplex)
-                .forEach(type -> {
-                    String name = type.getName();
-                    if (mapElements.containsKey(name)) type.setElement(mapElements.get(name));
-                    else LOGGER.warn("Data type " + name + " is not found!");
-                });
+                .map(type -> type.setElement(mapElements.get(type.getName())));
         return new Model(uri, elements);
     }
 
@@ -63,13 +59,10 @@ public class SchemaParserService implements ParserService {
         XSTerm term = type.getContentType().asParticle().getTerm();
         String name = type.getName();
         Preconditions.checkArgument(!Strings.isNullOrEmpty(name));
-        Model.Element element = new Model.Element(name, parseAttribute(term).collect(Collectors.toSet()));
-
         XSType base = type.getBaseType();
-        if (!ComplexType.ANY_TYPE.equals(base.getName()))
-            // todo: warning use stack
-            element.setExtend(parseElement(base.asComplexType()));
-        return element;
+        // todo: warning use stack
+        Model.Element extend = !ComplexType.ANY_TYPE.equals(base.getName()) ? parseElement(base.asComplexType()): null;
+        return new Model.Element(name, parseAttribute(term).collect(Collectors.toSet()), extend);
     }
 
     private static Stream<Model.Attribute> parseAttribute(XSTerm term) {

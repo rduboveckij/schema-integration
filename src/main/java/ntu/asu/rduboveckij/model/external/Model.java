@@ -2,6 +2,8 @@ package ntu.asu.rduboveckij.model.external;
 
 import com.google.common.collect.Sets;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -10,11 +12,11 @@ import java.util.stream.Collectors;
  * @since 16.06.2014
  */
 public final class Model extends Name {
-    private Set<Element> elements = Sets.newHashSet();
+    private final Set<Element> elements;
 
     public Model(String name, Set<Element> elements) {
         super(name);
-        this.elements = elements.stream()
+        this.elements = Objects.requireNonNull(elements).stream()
                 .peek(elem -> elem.setParent(this))
                 .collect(Collectors.toSet());
     }
@@ -23,52 +25,37 @@ public final class Model extends Name {
         return elements;
     }
 
-    public void setElements(Set<Element> elements) {
-        this.elements = elements;
-    }
-
     public final static class Element extends AbstractModelItem<Model> {
-        private Set<Attribute> attributes = Sets.newHashSet();
-        private Element extend;
+        private final Set<Attribute> attributes;
+        private final Optional<Element> extend;
 
-        public Element(String name, Set<Attribute> attributes) {
+        public Element(String name, Set<Attribute> attributes, Element extend) {
             super(name);
-            this.attributes = attributes.stream()
+            this.extend = Optional.ofNullable(extend);
+            this.attributes = Objects.requireNonNull(attributes).stream()
                     .peek(attr -> attr.setParent(this))
                     .collect(Collectors.toSet());
         }
 
-        public Element getExtend() {
+        public Optional<Element> getExtend() {
             return extend;
-        }
-
-        public void setExtend(Element extend) {
-            this.extend = extend;
         }
 
         public Set<Attribute> getAttributes() {
             return attributes;
         }
-
-        public void setAttributes(Set<Attribute> attributes) {
-            this.attributes = attributes;
-        }
     }
 
     public final static class Attribute extends AbstractModelItem<Element> {
-        private DataType type;
+        private final DataType type;
 
         public Attribute(String name, DataType type) {
             super(name);
-            this.type = type;
+            this.type = Objects.requireNonNull(type);
         }
 
         public DataType getType() {
             return type;
-        }
-
-        public void setType(DataType type) {
-            this.type = type;
         }
     }
 }

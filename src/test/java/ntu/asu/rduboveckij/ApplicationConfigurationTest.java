@@ -25,12 +25,12 @@ public abstract class ApplicationConfigurationTest {
 
     static {
         Model.Attribute sourceAttr = new Model.Attribute("userId", DataType.valueOf(PrimitiveEnum.LONG.getName()));
-        Model.Element sourceElem = new Model.Element("userBasket", Sets.newHashSet(sourceAttr));
+        Model.Element sourceElem = new Model.Element("userBasket", Sets.newHashSet(sourceAttr), null);
         SPLIT_USER_BASKET = new Split.Element(sourceElem, Arrays.asList("user", "basket"),
                 Sets.newHashSet(new Split.Attribute(sourceAttr, Arrays.asList("user", "id"))));
 
         Model.Attribute targetAttr = new Model.Attribute("customerId", DataType.valueOf(PrimitiveEnum.INTEGER.getName()));
-        Model.Element targetElem = new Model.Element("customer", Sets.newHashSet(targetAttr));
+        Model.Element targetElem = new Model.Element("customer", Sets.newHashSet(targetAttr), null);
         SPLIT_CUSTOMER = new Split.Element(targetElem, Arrays.asList("customer"),
                 Sets.newHashSet(new Split.Attribute(targetAttr, Arrays.asList("customer", "id"))));
     }

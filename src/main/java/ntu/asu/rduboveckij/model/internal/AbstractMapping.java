@@ -1,6 +1,5 @@
 package ntu.asu.rduboveckij.model.internal;
 
-import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.model.external.AbstractModelItem;
 
 import java.util.Objects;
@@ -11,28 +10,20 @@ import java.util.Set;
  * @since 8/2/2014
  */
 public abstract class AbstractMapping<D, T extends AbstractModelItem> {
-    private Set<D> maps = Sets.newHashSet();
-    private Set<T> singles = Sets.newHashSet();
+    private final Set<D> joined;
+    private final Set<T> transferred;
 
-    protected AbstractMapping(Set<D> maps, Set<T> singles) {
-        this.maps = Objects.requireNonNull(maps);
-        this.singles = Objects.requireNonNull(singles);
+    protected AbstractMapping(Set<D> joined, Set<T> transferred) {
+        this.joined = Objects.requireNonNull(joined);
+        this.transferred = Objects.requireNonNull(transferred);
     }
 
-    public Set<D> getMaps() {
-        return maps;
+    public Set<D> getJoined() {
+        return joined;
     }
 
-    public void setMaps(Set<D> maps) {
-        this.maps = maps;
-    }
-
-    public Set<T> getSingles() {
-        return singles;
-    }
-
-    public void setSingles(Set<T> singles) {
-        this.singles = singles;
+    public Set<T> getTransferred() {
+        return transferred;
     }
 
     @Override
@@ -42,16 +33,11 @@ public abstract class AbstractMapping<D, T extends AbstractModelItem> {
 
         AbstractMapping that = (AbstractMapping) o;
 
-        if (maps != null ? !maps.equals(that.maps) : that.maps != null) return false;
-        if (singles != null ? !singles.equals(that.singles) : that.singles != null) return false;
-
-        return true;
+        return joined.equals(that.joined) && transferred.equals(that.transferred);
     }
 
     @Override
     public int hashCode() {
-        int result = maps != null ? maps.hashCode() : 0;
-        result = 31 * result + (singles != null ? singles.hashCode() : 0);
-        return result;
+        return 31 * joined.hashCode() + transferred.hashCode();
     }
 }

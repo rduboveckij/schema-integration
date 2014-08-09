@@ -9,12 +9,12 @@ import java.util.Set;
  * @since 8/2/2014
  */
 public class Mapping extends AbstractMapping<Mapping.Element, Model.Element> {
-    public Mapping(Set<Mapping.Element> maps, Set<Model.Element> singles) {
-        super(maps, singles);
+    public Mapping(Set<Mapping.Element> joined, Set<Model.Element> transferred) {
+        super(joined, transferred);
     }
 
     public final static class Element extends AbstractMapping<Mapping.Attribute, Model.Attribute> {
-        private TableIndex<Model.Element> index;
+        private final TableIndex<Model.Element> index;
 
         public Element(Set<Mapping.Attribute> maps, Set<Model.Attribute> singles,
                        Model.Element source, Model.Element target) {
@@ -38,16 +38,12 @@ public class Mapping extends AbstractMapping<Mapping.Element, Model.Element> {
 
             Element element = (Element) o;
 
-            if (index != null ? !index.equals(element.index) : element.index != null) return false;
-
-            return true;
+            return index.equals(element.index);
         }
 
         @Override
         public int hashCode() {
-            int result = super.hashCode();
-            result = 31 * result + (index != null ? index.hashCode() : 0);
-            return result;
+            return 31 * super.hashCode() + index.hashCode();
         }
     }
 
