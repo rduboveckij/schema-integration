@@ -15,17 +15,9 @@ public abstract class Result<T extends AbstractModelItem> {
     private final TableIndex<T> index;
     private final double score;
 
-    protected Result(T source, T target, double score) {
-        this.index = new TableIndex<>(source, target);
+    protected Result(TableIndex<T> index, double score) {
+        this.index = Objects.requireNonNull(index);
         this.score = score;
-    }
-
-    public T getSource() {
-        return index.getSource();
-    }
-
-    public T getTarget() {
-        return index.getTarget();
     }
 
     public TableIndex<T> getIndex() {
@@ -39,8 +31,8 @@ public abstract class Result<T extends AbstractModelItem> {
     public final static class Element extends Result<Model.Element> {
         private final Set<Attribute> attributes;
 
-        public Element(Model.Element source, Model.Element target, double score, Set<Attribute> attributes) {
-            super(source, target, score);
+        public Element(TableIndex<Model.Element> index, double score, Set<Attribute> attributes) {
+            super(index, score);
             this.attributes = Objects.requireNonNull(attributes);
         }
 
@@ -50,13 +42,13 @@ public abstract class Result<T extends AbstractModelItem> {
     }
 
     public final static class Attribute extends Result<Model.Attribute> {
-        public Attribute(Model.Attribute source, Model.Attribute target, double score) {
-            super(source, target, score);
+        public Attribute(TableIndex<Model.Attribute> index, double score) {
+            super(index, score);
         }
     }
 
     public static Mapping.Element toMapping(Element result) {
-        return new Mapping.Element(Sets.newHashSet(), Sets.newHashSet(), result.getSource(), result.getTarget());
+        return new Mapping.Element(Sets.newHashSet(), Sets.newHashSet(), result.getIndex());
     }
 
     @Override

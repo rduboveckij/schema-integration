@@ -2,6 +2,7 @@ package ntu.asu.rduboveckij.model.internal;
 
 import ntu.asu.rduboveckij.model.external.Model;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -16,18 +17,13 @@ public class Mapping extends AbstractMapping<Mapping.Element, Model.Element> {
     public final static class Element extends AbstractMapping<Mapping.Attribute, Model.Attribute> {
         private final TableIndex<Model.Element> index;
 
-        public Element(Set<Mapping.Attribute> maps, Set<Model.Attribute> singles,
-                       Model.Element source, Model.Element target) {
+        public Element(Set<Mapping.Attribute> maps, Set<Model.Attribute> singles, TableIndex<Model.Element> index) {
             super(maps, singles);
-            index = new TableIndex<>(source, target);
+            this.index = Objects.requireNonNull(index);
         }
 
-        public Model.Element getSource() {
-            return index.getSource();
-        }
-
-        public Model.Element getTarget() {
-            return index.getTarget();
+        public TableIndex<Model.Element> getIndex() {
+            return index;
         }
 
         @Override
@@ -47,9 +43,31 @@ public class Mapping extends AbstractMapping<Mapping.Element, Model.Element> {
         }
     }
 
-    public final static class Attribute extends TableIndex<Model.Attribute> {
-        public Attribute(Model.Attribute source, Model.Attribute target) {
-            super(source, target);
+    public final static class Attribute {
+        private final TableIndex<Model.Element> index;
+
+        public Attribute(TableIndex<Model.Element> index) {
+            this.index = Objects.requireNonNull(index);
+        }
+
+        public TableIndex<Model.Element> getIndex() {
+            return index;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+
+            Attribute element = (Attribute) o;
+
+            return index.equals(element.index);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * super.hashCode() + index.hashCode();
         }
     }
 }

@@ -6,6 +6,7 @@ import ntu.asu.rduboveckij.model.external.DataType;
 import ntu.asu.rduboveckij.model.external.Model;
 import ntu.asu.rduboveckij.model.internal.Result;
 import ntu.asu.rduboveckij.model.internal.Split;
+import ntu.asu.rduboveckij.model.internal.TableIndex;
 import ntu.asu.rduboveckij.util.CommonUtils;
 import ntu.asu.rduboveckij.util.Pair;
 import org.springframework.stereotype.Service;
@@ -27,19 +28,19 @@ public class DataTypeSimilarityServiceImpl implements DataTypeSimilarityService 
     public Result.Element similarity(Split.Element source, Split.Element target) {
         Set<Result.Attribute> notFiltered = CommonUtils.eachStream(source.getAttributes(), target.getAttributes(), this::similarityAttribute)
                 .collect(Collectors.toSet());
-        Set<Result.Attribute> attributes = CommonUtils.similarityFilter(notFiltered);
-        double attributeScore = attributes.stream()
+        Set<Result.Attribute> attributes = CommonUtils.similarityFilter(notFiltered)
+                .parallelStream()
+                .filter(result -> result.getScore() > settings.getThresholdFactor())
+                .collect(Collectors.toSet());
+        double attributeScore = attributes.parallelStream()
                 .mapToDouble(Result::getScore)
                 .average().getAsDouble();
-
         double resultScore = CommonUtils.normal(Pair.ofOne(attributeScore));
-        return new Result.Element(source.getParent(), target.getParent(), resultScore, attributes);
+        return new Result.Element(TableIndex.of(source, target), resultScore, attributes);
     }
 
     private Result.Attribute similarityAttribute(Split.Attribute source, Split.Attribute target) {
-        Model.Attribute parentSource = source.getParent();
-        Model.Attribute parentTarget = target.getParent();
-        return new Result.Attribute(parentSource, parentTarget, similarityType(parentSource.getType(), parentTarget.getType()));
+        return new Result.Attribute(TableIndex.of(source, target), similarityType(source.getParent().getType(), target.getParent().getType()));
     }
 
     private double similarityType(DataType sourceType, DataType targetType) {

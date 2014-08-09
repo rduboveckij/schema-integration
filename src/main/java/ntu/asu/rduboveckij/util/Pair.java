@@ -9,6 +9,14 @@ public class Pair<K, V> extends javafx.util.Pair<K, V> {
         super(key, value);
     }
 
+    public Pair<K, V> ofKey(K key) {
+        return new Pair<>(key, getValue());
+    }
+
+    public Pair<K, V> ofValue(V value) {
+        return new Pair<>(getKey(), value);
+    }
+
     public static <K, V> Pair<K, V> of(K key, V value) {
         return new Pair<>(key, value);
     }

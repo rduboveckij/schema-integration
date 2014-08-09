@@ -1,16 +1,21 @@
 package ntu.asu.rduboveckij.model.internal;
 
+import ntu.asu.rduboveckij.model.external.AbstractParent;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * @author andrus.god
  * @since 8/2/2014
  */
-public class TableIndex<T> {
+public final class TableIndex<T> {
     private final T source;
     private final T target;
 
-    protected TableIndex(T source, T target) {
+    private TableIndex(T source, T target) {
         this.source = Objects.requireNonNull(source);
         this.target = Objects.requireNonNull(target);
     }
@@ -21,6 +26,10 @@ public class TableIndex<T> {
 
     public T getTarget() {
         return target;
+    }
+
+    public List<T> getAll() {
+        return Arrays.asList(source, target);
     }
 
     @Override
@@ -36,5 +45,13 @@ public class TableIndex<T> {
     @Override
     public int hashCode() {
         return 31 * source.hashCode() + target.hashCode();
+    }
+
+    public static <T> TableIndex<T> of(T source, T target) {
+        return new TableIndex<>(source, target);
+    }
+
+    public static <P, T extends AbstractParent<P>> TableIndex<P> of(T source, T target) {
+        return new TableIndex<>(source.getParent(), target.getParent());
     }
 }

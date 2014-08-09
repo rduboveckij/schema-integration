@@ -5,6 +5,7 @@ import ntu.asu.rduboveckij.ApplicationConfigurationTest;
 import ntu.asu.rduboveckij.api.settings.SimilaritySettings;
 import ntu.asu.rduboveckij.model.internal.Result;
 import ntu.asu.rduboveckij.model.internal.Split;
+import ntu.asu.rduboveckij.model.internal.TableIndex;
 import ntu.asu.rduboveckij.util.CommonUtils;
 import ntu.asu.rduboveckij.util.Pair;
 import org.junit.Assert;
@@ -26,7 +27,7 @@ public class DictionarySimilarityServiceTest extends ApplicationConfigurationTes
     @Test
     public void testSimilarity() throws Exception {
         double resultScore = CommonUtils.normal(Pair.ofOne(0.0), Pair.of(settings.getImportanceAttributeFactor(), 0.5));
-        Result.Element expectedElem = new Result.Element(SPLIT_USER_BASKET.getParent(), SPLIT_CUSTOMER.getParent(), resultScore, Sets.newHashSet());
+        Result.Element expectedElem = new Result.Element(TableIndex.of(SPLIT_USER_BASKET, SPLIT_CUSTOMER), resultScore, Sets.newHashSet());
         Result.Element resultElem = dictionarySimilarityService.similarity(SPLIT_USER_BASKET, SPLIT_CUSTOMER);
         Assert.assertEquals(expectedElem, resultElem);
         Assert.assertEquals(expectedElem.getScore(), resultElem.getScore(), 0.001);

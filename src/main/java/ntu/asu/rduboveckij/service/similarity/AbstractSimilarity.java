@@ -4,6 +4,7 @@ import ntu.asu.rduboveckij.api.settings.SimilaritySettings;
 import ntu.asu.rduboveckij.api.similarity.SimilarityService;
 import ntu.asu.rduboveckij.model.internal.Result;
 import ntu.asu.rduboveckij.model.internal.Split;
+import ntu.asu.rduboveckij.model.internal.TableIndex;
 import ntu.asu.rduboveckij.util.CommonUtils;
 import ntu.asu.rduboveckij.util.Pair;
 
@@ -26,13 +27,18 @@ public abstract class AbstractSimilarity implements SimilarityService {
         double elementScore = calcAverageBestDistance(source.getNames(), target.getNames());
         Set<Result.Attribute> notFiltered = CommonUtils.eachStream(source.getAttributes(), target.getAttributes(), this::similarityAttribute)
                 .collect(Collectors.toSet());
-        Set<Result.Attribute> attributes = CommonUtils.similarityFilter(notFiltered);
-        double attributeScore = attributes.stream()
+        Set<Result.Attribute> attributes = CommonUtils.similarityFilter(notFiltered)
+                .parallelStream()
+                .filter(result -> result.getScore() > settings.getThresholdFactor())
+                .collect(Collectors.toSet());
+        double attributeScore = attributes.parallelStream()
                 .mapToDouble(Result::getScore)
                 .average().getAsDouble();
         double resultScore = CommonUtils.normal(Pair.ofOne(elementScore), Pair.of(settings.getImportanceAttributeFactor(), attributeScore));
-        return new Result.Element(source.getParent(), target.getParent(), resultScore, attributes);
+        return new Result.Element(TableIndex.of(source, target), resultScore, attributes);
     }
+
+
 
     private double calcAverageBestDistance(List<String> sourceNames, List<String> targetNames) {
         DoubleStream result = sourceNames.size() < targetNames.size() ?
@@ -57,6 +63,6 @@ public abstract class AbstractSimilarity implements SimilarityService {
     protected abstract double getScore(String firstName, String secondName);
 
     private Result.Attribute similarityAttribute(Split.Attribute source, Split.Attribute target) {
-        return new Result.Attribute(source.getParent(), target.getParent(), calcAverageBestDistance(source.getNames(), target.getNames()));
+        return new Result.Attribute(TableIndex.of(source, target), calcAverageBestDistance(source.getNames(), target.getNames()));
     }
 }
