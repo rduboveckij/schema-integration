@@ -8,6 +8,17 @@
     <artifactId>schema-integration</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>http://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -54,6 +65,12 @@
             <groupId>net.sf.extjwnl</groupId>
             <artifactId>extjwnl-data-wn31</artifactId>
             <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.9</version>
         </dependency>
 
         <dependency>

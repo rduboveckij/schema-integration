@@ -39,7 +39,7 @@ public class DictionarySimilarityServiceImpl extends AbstractSimilarity implemen
     }
 
     private double containAverages(List<String> terms) {
-        return terms.stream()
+        return terms.parallelStream()
                 .map(dictionaryService::isContain)
                 .mapToDouble(CommonUtils::booleanToDouble)
                 .average()

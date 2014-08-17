@@ -13,5 +13,9 @@ public interface AlgorithmSettings {
 
     int getRemoveCost();
 
+    int getTransformCost();
+
+    String getDistanceStrategy();
+
     int getWordNetDepth();
 }

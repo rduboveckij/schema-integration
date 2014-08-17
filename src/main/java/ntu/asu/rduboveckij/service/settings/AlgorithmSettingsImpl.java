@@ -1,11 +1,13 @@
 package ntu.asu.rduboveckij.service.settings;
 
-import com.google.common.base.Preconditions;
+import com.google.common.collect.Range;
 import ntu.asu.rduboveckij.api.settings.AlgorithmSettings;
+import ntu.asu.rduboveckij.util.CommonUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Objects;
 
 /**
  * @author andrus.god
@@ -13,34 +15,22 @@ import javax.annotation.PostConstruct;
  */
 @Component
 public class AlgorithmSettingsImpl implements AlgorithmSettings {
-    @Value("#{environment['distance.levenshtein.replaceCost']}")
-    private int replaceCost;
-    @Value("#{environment['distance.levenshtein.replaceCaseCost']}")
-    private int replaceCaseCost;
-    @Value("#{environment['distance.levenshtein.insertCost']}")
-    private int insertCost;
-    @Value("#{environment['distance.levenshtein.removeCost']}")
-    private int removeCost;
-
-    @Value("#{environment['dictionary.wordnet.depth']}")
-    private int wordNetDepth;
-
-    @PostConstruct
-    public void init() {
-        Preconditions.checkArgument(replaceCost > 0);
-        Preconditions.checkArgument(replaceCaseCost > 0);
-        Preconditions.checkArgument(insertCost > 0);
-        Preconditions.checkArgument(removeCost > 0);
-        Preconditions.checkArgument(wordNetDepth >= 0);
-    }
+    private volatile int replaceCost;
+    private volatile int replaceCaseCost;
+    private volatile int insertCost;
+    private volatile int removeCost;
+    private volatile int transformCost;
+    private volatile String distanceStrategy;
+    private volatile int wordNetDepth;
 
     @Override
     public int getReplaceCost() {
         return replaceCost;
     }
 
+    @Value("#{environment['distance.levenshtein.replaceCost']}")
     public void setReplaceCost(int replaceCost) {
-        this.replaceCost = replaceCost;
+        this.replaceCost = CommonUtils.requireRange(replaceCost, Range.greaterThan(0));
     }
 
     @Override
@@ -48,8 +38,9 @@ public class AlgorithmSettingsImpl implements AlgorithmSettings {
         return replaceCaseCost;
     }
 
+    @Value("#{environment['distance.levenshtein.replaceCaseCost']}")
     public void setReplaceCaseCost(int replaceCaseCost) {
-        this.replaceCaseCost = replaceCaseCost;
+        this.replaceCaseCost = CommonUtils.requireRange(replaceCaseCost, Range.greaterThan(0));
     }
 
     @Override
@@ -57,8 +48,9 @@ public class AlgorithmSettingsImpl implements AlgorithmSettings {
         return insertCost;
     }
 
+    @Value("#{environment['distance.levenshtein.insertCost']}")
     public void setInsertCost(int insertCost) {
-        this.insertCost = insertCost;
+        this.insertCost = CommonUtils.requireRange(insertCost, Range.greaterThan(0));
     }
 
     @Override
@@ -66,8 +58,29 @@ public class AlgorithmSettingsImpl implements AlgorithmSettings {
         return removeCost;
     }
 
+    @Value("#{environment['distance.levenshtein.removeCost']}")
     public void setRemoveCost(int removeCost) {
-        this.removeCost = removeCost;
+        this.removeCost = CommonUtils.requireRange(removeCost, Range.greaterThan(0));
+    }
+
+    @Override
+    public int getTransformCost() {
+        return transformCost;
+    }
+
+    @Value("#{environment['distance.damerau-levenshtein.transformCost']}")
+    public void setTransformCost(int transformCost) {
+        this.transformCost = CommonUtils.requireRange(transformCost, Range.greaterThan(0));
+    }
+
+    @Override
+    public String getDistanceStrategy() {
+        return distanceStrategy;
+    }
+
+    @Value("#{environment['distance.strategy']}")
+    public void setDistanceStrategy(String distanceStrategy) {
+        this.distanceStrategy = CommonUtils.requireNotEmpty(distanceStrategy);
     }
 
     @Override
@@ -75,7 +88,8 @@ public class AlgorithmSettingsImpl implements AlgorithmSettings {
         return wordNetDepth;
     }
 
+    @Value("#{environment['dictionary.wordnet.depth']}")
     public void setWordNetDepth(int wordNetDepth) {
-        this.wordNetDepth = wordNetDepth;
+        this.wordNetDepth = CommonUtils.requireRange(wordNetDepth, Range.atLeast(0));
     }
 }

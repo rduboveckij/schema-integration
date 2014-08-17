@@ -1,7 +1,5 @@
 package ntu.asu.rduboveckij.service.algorithm;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.sun.xml.xsom.*;
@@ -10,8 +8,7 @@ import ntu.asu.rduboveckij.api.algorithm.ParserService;
 import ntu.asu.rduboveckij.model.external.ComplexType;
 import ntu.asu.rduboveckij.model.external.DataType;
 import ntu.asu.rduboveckij.model.external.Model;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ntu.asu.rduboveckij.util.CommonUtils;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
@@ -57,29 +54,24 @@ public class SchemaParserService implements ParserService {
 
     private static Model.Element parseElement(XSComplexType type) {
         XSTerm term = type.getContentType().asParticle().getTerm();
-        String name = type.getName();
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(name));
         XSType base = type.getBaseType();
         // todo: warning use stack
-        Model.Element extend = !ComplexType.ANY_TYPE.equals(base.getName()) ? parseElement(base.asComplexType()): null;
-        return new Model.Element(name, parseAttribute(term).collect(Collectors.toSet()), extend);
+        Model.Element extend = !ComplexType.ANY_TYPE.equals(base.getName()) ? parseElement(base.asComplexType()) : null;
+        return new Model.Element(CommonUtils.requireNotEmpty(type.getName()), parseAttribute(term).collect(Collectors.toSet()), extend);
     }
 
     private static Stream<Model.Attribute> parseAttribute(XSTerm term) {
-        Stream<Model.Attribute> attributes = Stream.empty();
-        if (term.isModelGroup()) {
-            attributes = Arrays.stream(term.asModelGroup().getChildren())
+        if (term.isModelGroup())
+            return Arrays.stream(term.asModelGroup().getChildren())
                     .map(XSParticle::getTerm)
                     .flatMap(SchemaParserService::parseAttribute);
-        } else if (term.isElementDecl()) {
-            attributes = Lists.newArrayList(parseAttribute(term.asElementDecl())).stream();
-        }
-        return attributes;
+        else if (term.isElementDecl())
+            return Lists.newArrayList(parseAttribute(term.asElementDecl())).stream();
+        return Stream.empty();
     }
 
     private static Model.Attribute parseAttribute(XSElementDecl decl) {
-        String name = decl.getName();
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(name));
-        return new Model.Attribute(name, DataType.valueOf(decl.getType().getName()));
+        return new Model.Attribute(CommonUtils.requireNotEmpty(decl.getName()),
+                DataType.valueOf(decl.getType().getName()));
     }
 }

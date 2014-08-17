@@ -1,7 +1,5 @@
 package ntu.asu.rduboveckij.service.algorithm;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.POS;
@@ -11,7 +9,7 @@ import net.sf.extjwnl.data.relationship.RelationshipList;
 import net.sf.extjwnl.dictionary.Dictionary;
 import ntu.asu.rduboveckij.api.algorithm.DictionaryService;
 import ntu.asu.rduboveckij.api.settings.AlgorithmSettings;
-import org.springframework.beans.factory.annotation.Value;
+import ntu.asu.rduboveckij.util.CommonUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -32,15 +30,15 @@ public class WordNetDictionaryService implements DictionaryService {
     private Dictionary dictionary;
 
     @PostConstruct
-    public void init() throws JWNLException {
+    private void init() throws JWNLException {
         dictionary = Dictionary.getDefaultResourceInstance();
     }
 
     @Override
     public boolean isSynonym(String first, String second) {
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(first) && !Strings.isNullOrEmpty(second));
-        return first.equals(second) || POS.getAllPOS().stream()
-                .anyMatch(pos -> isSynonym(first, second, pos));
+        return CommonUtils.requireNotEmpty(first).equals(CommonUtils.requireNotEmpty(second)) ||
+                POS.getAllPOS().parallelStream()
+                        .anyMatch(pos -> isSynonym(first, second, pos));
     }
 
     private boolean isSynonym(String first, String second, POS pos) {
@@ -73,7 +71,7 @@ public class WordNetDictionaryService implements DictionaryService {
 
     @Override
     public boolean isContain(String term) {
-        return POS.getAllPOS().stream()
+        return POS.getAllPOS().parallelStream()
                 .map(pos -> getIndexWord(pos, term))
                 .anyMatch(Optional::isPresent);
     }

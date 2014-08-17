@@ -1,20 +1,24 @@
 package ntu.asu.rduboveckij.util;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.model.external.AbstractModelItem;
 import ntu.asu.rduboveckij.model.internal.Result;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -66,7 +70,6 @@ public final class CommonUtils {
     }
 
 
-
     public static <P extends AbstractModelItem, T extends Result<P>> Set<T> similarityFilter(Set<T> results) {
         Set<P> ignored = Sets.newHashSet();
         return results.stream()
@@ -86,5 +89,15 @@ public final class CommonUtils {
 
     public static <T, R> Function<T, Stream<R>> eachMap(Collection<T> seconds, BiFunction<T, T, R> function) {
         return first -> seconds.parallelStream().map(second -> function.apply(first, second));
+    }
+
+    public static <T extends Comparable<T>> T requireRange(T number, Range<T> range) {
+        Preconditions.checkArgument(range.contains(number), "Available value si only in range" + range);
+        return number;
+    }
+
+    public static String requireNotEmpty(String value) {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(value), "Available is only not null or empty string");
+        return value;
     }
 }
