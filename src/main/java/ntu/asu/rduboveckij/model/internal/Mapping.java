@@ -44,13 +44,13 @@ public class Mapping extends AbstractMapping<Mapping.Element, Model.Element> {
     }
 
     public final static class Attribute {
-        private final TableIndex<Model.Element> index;
+        private final TableIndex<Model.Attribute> index;
 
-        public Attribute(TableIndex<Model.Element> index) {
+        public Attribute(TableIndex<Model.Attribute> index) {
             this.index = Objects.requireNonNull(index);
         }
 
-        public TableIndex<Model.Element> getIndex() {
+        public TableIndex<Model.Attribute> getIndex() {
             return index;
         }
 
@@ -68,6 +68,10 @@ public class Mapping extends AbstractMapping<Mapping.Element, Model.Element> {
         @Override
         public int hashCode() {
             return 31 * super.hashCode() + index.hashCode();
+        }
+
+        public static Attribute of(Result.Attribute attribute) {
+            return new Attribute(attribute.getIndex());
         }
     }
 }

@@ -27,15 +27,13 @@ public abstract class AbstractSimilarity implements SimilarityService {
         double elementScore = calcAverageBestDistance(source.getNames(), target.getNames());
         Set<Result.Attribute> notFiltered = CommonUtils.eachStream(source.getAttributes(), target.getAttributes(), this::similarityAttribute)
                 .collect(Collectors.toSet());
-        Set<Result.Attribute> attributes = CommonUtils.similarityFilter(notFiltered)
+        double attributeScore = CommonUtils.similarityFilter(notFiltered)
                 .parallelStream()
-                .filter(result -> result.getScore() > settings.getThresholdFactor())
-                .collect(Collectors.toSet());
-        double attributeScore = attributes.parallelStream()
                 .mapToDouble(Result::getScore)
-                .average().getAsDouble();
+                .average()
+                .orElse(CommonUtils.MIN_SCORE);
         double resultScore = CommonUtils.normal(Pair.ofOne(elementScore), Pair.of(settings.getImportanceAttributeFactor(), attributeScore));
-        return new Result.Element(TableIndex.of(source, target), resultScore, attributes);
+        return new Result.Element(TableIndex.of(source, target), resultScore, notFiltered);
     }
 
 
@@ -45,7 +43,7 @@ public abstract class AbstractSimilarity implements SimilarityService {
                 calcBestDistance(targetNames, sourceNames) :
                 calcBestDistance(sourceNames, targetNames);
         return result.average()
-                .getAsDouble();
+                .orElse(CommonUtils.MIN_SCORE);
     }
 
     private DoubleStream calcBestDistance(List<String> firstNames, List<String> secondNames) {
@@ -57,7 +55,7 @@ public abstract class AbstractSimilarity implements SimilarityService {
         return secondNames.parallelStream()
                 .mapToDouble(secondName -> getScore(firstName, secondName))
                 .max()
-                .getAsDouble();
+                .orElse(CommonUtils.MIN_SCORE);
     }
 
     protected abstract double getScore(String firstName, String secondName);

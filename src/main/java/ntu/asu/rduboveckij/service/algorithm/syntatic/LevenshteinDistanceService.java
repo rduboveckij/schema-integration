@@ -22,6 +22,6 @@ public class LevenshteinDistanceService extends AbstractLevenshteinDistanceServi
         return IntStream.of(settings.getReplaceCost(), settings.getReplaceCaseCost(),
                 settings.getInsertCost(), settings.getRemoveCost())
                 .max()
-                .getAsInt();
+                .orElse(0);
     }
 }

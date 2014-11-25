@@ -1,5 +1,6 @@
 package ntu.asu.rduboveckij.service.algorithm.syntatic;
 
+import ntu.asu.rduboveckij.model.external.ComplexType;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.IntStream;
@@ -28,6 +29,6 @@ public class DamerauLevenshteinDistance extends AbstractLevenshteinDistanceServi
         return IntStream.of(settings.getReplaceCost(), settings.getReplaceCaseCost(),
                 settings.getInsertCost(), settings.getRemoveCost(), settings.getTransformCost())
                 .max()
-                .getAsInt();
+                .orElse(0);
     }
 }

@@ -15,6 +15,10 @@ public class SplitterServiceTest extends ApplicationConfigurationTest {
 
     @Test
     public void testSplitter() throws Exception {
-        assertEquals(8, splitterTermService.split(" HelloMy,name is-Bob_i.from  USA").size());
+        assertEquals(8, splitterTermService.split("helloMy,name is-Bob_i.from  USA").size());
+        assertEquals(2, splitterTermService.split("customerId").size());
+        assertEquals(2, splitterTermService.split("user_id").size());
+        assertEquals(2, splitterTermService.split("CreditCard").size());
+        assertEquals(2, splitterTermService.split("creditCard").size());
     }
 }

@@ -10,6 +10,8 @@ import net.sf.extjwnl.dictionary.Dictionary;
 import ntu.asu.rduboveckij.api.algorithm.DictionaryService;
 import ntu.asu.rduboveckij.api.settings.AlgorithmSettings;
 import ntu.asu.rduboveckij.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +26,8 @@ import static net.sf.extjwnl.data.relationship.RelationshipFinder.findRelationsh
  */
 @Service
 public class WordNetDictionaryService implements DictionaryService {
+    private static Logger LOG = LoggerFactory.getLogger(WordNetDictionaryService.class);
+
     @Inject
     private AlgorithmSettings settings;
 
@@ -50,7 +54,7 @@ public class WordNetDictionaryService implements DictionaryService {
 
     private Optional<IndexWord> getIndexWord(POS pos, String term) {
         try {
-            return Optional.ofNullable(dictionary.getIndexWord(pos, term));
+            return Optional.ofNullable(dictionary.lookupIndexWord(pos, term));
         } catch (JWNLException e) {
             throw new RuntimeException(e);
         }
@@ -71,8 +75,12 @@ public class WordNetDictionaryService implements DictionaryService {
 
     @Override
     public boolean isContain(String term) {
-        return POS.getAllPOS().parallelStream()
-                .map(pos -> getIndexWord(pos, term))
-                .anyMatch(Optional::isPresent);
+        try {
+            boolean is = dictionary.lookupAllIndexWords(term).size() > 0;
+            if (!is) LOG.debug(term + " is not found.");
+            return is;
+        } catch (JWNLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

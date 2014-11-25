@@ -38,7 +38,7 @@ public abstract class AbstractLevenshteinDistanceService implements DistanceServ
             for (int j = 1; j < m; j++)
                 d[i][j] = getCost(first, second, d, i, j, insertCost, removeCost)
                         .min()
-                        .getAsInt();
+                        .orElse(0);
 
         return d[n - 1][m - 1];
     }

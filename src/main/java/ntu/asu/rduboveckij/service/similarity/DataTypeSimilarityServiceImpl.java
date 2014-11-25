@@ -28,15 +28,12 @@ public class DataTypeSimilarityServiceImpl implements DataTypeSimilarityService 
     public Result.Element similarity(Split.Element source, Split.Element target) {
         Set<Result.Attribute> notFiltered = CommonUtils.eachStream(source.getAttributes(), target.getAttributes(), this::similarityAttribute)
                 .collect(Collectors.toSet());
-        Set<Result.Attribute> attributes = CommonUtils.similarityFilter(notFiltered)
+        double resultScore = CommonUtils.similarityFilter(notFiltered)
                 .parallelStream()
-                .filter(result -> result.getScore() > settings.getThresholdFactor())
-                .collect(Collectors.toSet());
-        double attributeScore = attributes.parallelStream()
                 .mapToDouble(Result::getScore)
-                .average().getAsDouble();
-        double resultScore = CommonUtils.normal(Pair.ofOne(attributeScore));
-        return new Result.Element(TableIndex.of(source, target), resultScore, attributes);
+                .average()
+                .orElse(CommonUtils.MIN_SCORE);
+        return new Result.Element(TableIndex.of(source, target), resultScore, notFiltered);
     }
 
     private Result.Attribute similarityAttribute(Split.Attribute source, Split.Attribute target) {

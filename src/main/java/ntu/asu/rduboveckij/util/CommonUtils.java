@@ -8,9 +8,9 @@ import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.model.external.AbstractModelItem;
 import ntu.asu.rduboveckij.model.internal.Result;
+import ntu.asu.rduboveckij.model.internal.TableIndex;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * @author andrus.god
@@ -42,12 +44,15 @@ public final class CommonUtils {
     }
 
     public static double normal(Collection<Pair<Double, Double>> factorValues) {
-        return factorValues.parallelStream()
-                .mapToDouble(val -> val.getKey() * val.getValue())
-                .sum() / factorValues.parallelStream()
+        double sumOfKey = factorValues.parallelStream()
                 .filter(factor -> factor.getValue() != 0d)
-                .mapToDouble(factor -> factor.getKey())
+                .mapToDouble(Pair::getKey)
                 .sum();
+        double topSum = factorValues.parallelStream()
+                .mapToDouble(val -> val.getKey() * val.getValue())
+                .sum();
+        return Double.isNaN(sumOfKey) || Double.isNaN(topSum) || sumOfKey == 0d || topSum == 0d ?
+                MIN_SCORE: topSum / sumOfKey;
     }
 
     public static <T> Supplier<T> atPoll(Callable<T> task) {
@@ -73,10 +78,21 @@ public final class CommonUtils {
     public static <P extends AbstractModelItem, T extends Result<P>> Set<T> similarityFilter(Set<T> results) {
         Set<P> ignored = Sets.newHashSet();
         return results.stream()
-                .sorted((r1, r2) -> Double.compare(r1.getScore(), r2.getScore()))
+                .sorted((r1, r2) -> Double.compare(r1.getScore(), r2.getScore()) * -1)
                 .filter(result -> !ignored.contains(result.getIndex().getSource()) && !ignored.contains(result.getIndex().getTarget()))
                 .peek(result -> ignored.addAll(result.getIndex().getAll()))
                 .collect(Collectors.toSet());
+    }
+
+    public static <M extends AbstractModelItem> Set<M> findTransferred(Set<TableIndex<M>> joined, Set<M> source, Set<M> target) {
+        Set<M> singleMapping = Stream.concat(source.stream(), target.stream())
+                .collect(Collectors.toSet());
+
+        Set<M> results = joined.parallelStream()
+                .flatMap(index -> index.getAll().stream())
+                .collect(toSet());
+        singleMapping.removeAll(results);
+        return singleMapping;
     }
 
     public static double booleanToDouble(boolean b) {

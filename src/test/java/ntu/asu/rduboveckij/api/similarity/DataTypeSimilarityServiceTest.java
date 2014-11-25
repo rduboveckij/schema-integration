@@ -1,10 +1,8 @@
 package ntu.asu.rduboveckij.api.similarity;
 
-import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.ApplicationConfigurationTest;
 import ntu.asu.rduboveckij.api.settings.SimilaritySettings;
 import ntu.asu.rduboveckij.model.internal.Result;
-import ntu.asu.rduboveckij.model.internal.TableIndex;
 import ntu.asu.rduboveckij.util.CommonUtils;
 import ntu.asu.rduboveckij.util.Pair;
 import org.junit.Assert;
@@ -20,10 +18,8 @@ public class DataTypeSimilarityServiceTest extends ApplicationConfigurationTest 
 
     @Test
     public void testSimilarity() throws Exception {
-        double resultScore = CommonUtils.normal(Pair.of(CommonUtils.MAX_SCORE, settings.getImportanceAttributeFactor()));
-        Result.Element expectedElem = new Result.Element(TableIndex.of(SPLIT_USER_BASKET, SPLIT_CUSTOMER), resultScore, Sets.newHashSet());
+        double resultScore = CommonUtils.normal(Pair.of(CommonUtils.MAX_SCORE, settings.getDataTypeAttributeFactor()));
         Result.Element resultElem = dataTypeSimilarityService.similarity(SPLIT_USER_BASKET, SPLIT_CUSTOMER);
-        Assert.assertEquals(expectedElem, resultElem);
-        Assert.assertEquals(expectedElem.getScore(), resultElem.getScore(), 0.001);
+        Assert.assertEquals(resultScore, resultElem.getScore(), 0.001);
     }
 }

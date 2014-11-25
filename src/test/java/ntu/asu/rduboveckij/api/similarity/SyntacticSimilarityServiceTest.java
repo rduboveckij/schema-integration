@@ -5,9 +5,11 @@ import ntu.asu.rduboveckij.ApplicationConfigurationTest;
 import ntu.asu.rduboveckij.api.settings.SimilaritySettings;
 import ntu.asu.rduboveckij.model.internal.Result;
 import ntu.asu.rduboveckij.model.internal.TableIndex;
+import ntu.asu.rduboveckij.service.settings.SimilaritySettingsImpl;
 import ntu.asu.rduboveckij.util.CommonUtils;
 import ntu.asu.rduboveckij.util.Pair;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.inject.Inject;

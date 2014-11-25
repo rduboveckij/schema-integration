@@ -1,6 +1,5 @@
 package ntu.asu.rduboveckij.model.internal;
 
-import com.google.common.collect.Sets;
 import ntu.asu.rduboveckij.model.external.AbstractModelItem;
 import ntu.asu.rduboveckij.model.external.Model;
 
@@ -45,10 +44,6 @@ public abstract class Result<T extends AbstractModelItem> {
         public Attribute(TableIndex<Model.Attribute> index, double score) {
             super(index, score);
         }
-    }
-
-    public static Mapping.Element toMapping(Element result) {
-        return new Mapping.Element(Sets.newHashSet(), Sets.newHashSet(), result.getIndex());
     }
 
     @Override

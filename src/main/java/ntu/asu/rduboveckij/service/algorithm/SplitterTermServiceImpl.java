@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  */
 @Service
 public class SplitterTermServiceImpl implements SplitterTermService {
-    private static final String PATTERN = Stream.of("\\p{Punct}", "\\p{Blank}", "\\p{Cntrl}", "\\p{Space}", "(?<=[Lower])(?=\\p{Upper})")
+    private static final String PATTERN = Stream.of("\\p{Punct}", "\\p{Blank}", "\\p{Cntrl}", "\\p{Space}", "(?<=\\p{Lower})(?=\\p{Upper})")
             .collect(Collectors.joining("|", "(", ")"));
 
     @Override
