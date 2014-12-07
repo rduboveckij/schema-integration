@@ -36,8 +36,6 @@ public abstract class AbstractSimilarity implements SimilarityService {
         return new Result.Element(TableIndex.of(source, target), resultScore, notFiltered);
     }
 
-
-
     private double calcAverageBestDistance(List<String> sourceNames, List<String> targetNames) {
         DoubleStream result = sourceNames.size() < targetNames.size() ?
                 calcBestDistance(targetNames, sourceNames) :

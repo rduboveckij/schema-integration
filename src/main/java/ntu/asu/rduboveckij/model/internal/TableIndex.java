@@ -47,6 +47,14 @@ public final class TableIndex<T> {
         return 31 * source.hashCode() + target.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "source=" + source +
+                ", target=" + target +
+                '}';
+    }
+
     public static <T> TableIndex<T> of(T source, T target) {
         return new TableIndex<>(source, target);
     }

@@ -7,7 +7,7 @@ import java.util.Objects;
  * @since 7/20/2014
  */
 public abstract class AbstractParent<P> {
-    private P parent;
+    private transient P parent;
 
     protected AbstractParent() {
     }

@@ -19,12 +19,12 @@ public class ParserServiceTest extends ApplicationConfigurationTest {
 
     @Test
     public void testEasy() throws Exception {
-        String uri = TEST_FOLDER + "parser-easy.xsd";
-        Model expected = new Model(uri, Sets.newHashSet(
+        Model expected = new Model("parser-easy.xsd", Sets.newHashSet(
                 new Model.Element("user", Sets.newHashSet(), null),
                 new Model.Element("authorisation", Sets.newHashSet(), null)
         ));
-        Assert.assertEquals("Elements did not parse correctly.", expected.getElements(), parserService.parse(uri).getElements());
+        Assert.assertEquals("Elements did not parse correctly.", expected.getElements(),
+                parserService.parse(TEST_FOLDER + "parser-easy.xsd").getElements());
     }
 
     @Test

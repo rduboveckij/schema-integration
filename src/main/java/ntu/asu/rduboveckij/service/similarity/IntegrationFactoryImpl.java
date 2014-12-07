@@ -1,8 +1,12 @@
 package ntu.asu.rduboveckij.service.similarity;
 
+import com.google.common.collect.Iterables;
+import ntu.asu.rduboveckij.api.ReportService;
 import ntu.asu.rduboveckij.api.algorithm.ParserService;
+import ntu.asu.rduboveckij.api.settings.ApplicationSettings;
 import ntu.asu.rduboveckij.api.settings.SimilaritySettings;
 import ntu.asu.rduboveckij.api.similarity.*;
+import ntu.asu.rduboveckij.model.Report;
 import ntu.asu.rduboveckij.model.external.AbstractParent;
 import ntu.asu.rduboveckij.model.external.Model;
 import ntu.asu.rduboveckij.model.internal.Mapping;
@@ -15,8 +19,7 @@ import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 import javax.inject.Inject;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -41,6 +44,10 @@ public class IntegrationFactoryImpl implements IntegrationFactory {
     private DataTypeSimilarityService dataTypeSimilarityService;
     @Inject
     private SimilaritySettings settings;
+    @Inject
+    private ApplicationSettings applicationSettings;
+    @Inject
+    private ReportService reportService;
 
     private Predicate<? super Result<?>> FILTER_SCORE_BY_THRESHOLD = result -> result.getScore() > settings.getThresholdFactor();
 
@@ -54,28 +61,47 @@ public class IntegrationFactoryImpl implements IntegrationFactory {
     public class IntegrationServiceImpl implements Service {
         private final Set<Split.Element> sourceElements;
         private final Set<Split.Element> targetElements;
+        private Report report;
 
         public IntegrationServiceImpl(Set<Split.Element> sourceElements, Set<Split.Element> targetElements) {
             this.sourceElements = Objects.requireNonNull(sourceElements);
             this.targetElements = Objects.requireNonNull(targetElements);
+            if (applicationSettings.isWithReport())
+                report = new Report(Iterables.getLast(sourceElements).getParent().getParent(),
+                        Iterables.getLast(targetElements).getParent().getParent());
         }
 
         @Override
         public Mapping integration() {
             Set<Result.Element> results = CommonUtils.eachStream(sourceElements, targetElements, this::integration)
+                    .peek(result -> {
+                        if (applicationSettings.isWithReport()) report.getMainElements().add(result);
+                    })
                     .filter(FILTER_SCORE_BY_THRESHOLD)
                     .collect(toSet());
             Set<Mapping.Element> joined = CommonUtils.similarityFilter(results)
                     .parallelStream()
                     .map(this::calculationMappingElement)
                     .collect(toSet());
-            return new Mapping(joined, findTransferred(joined));
+
+            Mapping mapping = new Mapping(joined, findTransferred(joined));
+            if (applicationSettings.isWithReport()) {
+                report.setMapping(mapping);
+                reportService.save(report);
+            }
+            return mapping;
         }
 
         private Result.Element integration(Split.Element source, Split.Element target) {
             Result.Element syntactic = syntacticSimilarityService.similarity(source, target);
             Result.Element dictionary = dictionarySimilarityService.similarity(source, target);
             Result.Element dataType = dataTypeSimilarityService.similarity(source, target);
+
+            if (applicationSettings.isWithReport()) {
+                report.getSyntacticElements().add(syntactic);
+                report.getDictionaryElements().add(dictionary);
+                report.getDataTypeElements().add(dataType);
+            }
 
             double syntacticFactor = settings.getSyntacticFactor();
             double dictionaryFactor = settings.getDictionaryFactor();
@@ -85,11 +111,12 @@ public class IntegrationFactoryImpl implements IntegrationFactory {
                     getPairStreamWithFactorAndResult(dictionary, dictionaryFactor),
                     getPairStreamWithFactorAndResult(dataType, dataTypeFactor)
             )
-                    .flatMap(Function.<Stream<Pair<Double,Result.Attribute>>>identity())
-                    .collect(groupingBy(pair -> pair.getValue().getIndex(), mapping(pair -> Pair.of(pair.getKey(), pair.getValue().getScore()), toList())))
+                    .flatMap(Function.<Stream<Pair<Double, Result.Attribute>>>identity())
+                    .collect(groupingBy(pair -> pair.getValue().getIndex(),
+                            mapping((Pair<Double, Result.Attribute> pair) -> Pair.of(pair.getKey(), pair.getValue().getScore()), toList())))
                     .entrySet()
                     .parallelStream()
-                    .map(entry -> new Result.Attribute(entry.getKey(), CommonUtils.normal(entry.getValue())))
+                    .map(this::newNormalAttribute)
                     .collect(toSet());
 
             double elementScore = CommonUtils.normal(
@@ -98,6 +125,10 @@ public class IntegrationFactoryImpl implements IntegrationFactory {
                     Pair.of(dataTypeFactor, dataType.getScore())
             );
             return new Result.Element(TableIndex.of(source, target), elementScore, attributes);
+        }
+
+        private Result.Attribute newNormalAttribute(Map.Entry<TableIndex<Model.Attribute>, List<Pair<Double, Double>>> entry) {
+            return new Result.Attribute(entry.getKey(), CommonUtils.normal(entry.getValue()));
         }
 
         private Stream<Pair<Double, Result.Attribute>> getPairStreamWithFactorAndResult(Result.Element syntactic, double id) {

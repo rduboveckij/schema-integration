@@ -40,7 +40,7 @@ public class DictionarySimilarityServiceTest extends ApplicationConfigurationTes
 
         Split.Element expectedWithEmpty = new Split.Element(SPLIT_USER_BASKET.getParent(),
                 Arrays.asList("user", "bacgket", "empty-term"), Sets.newHashSet());
-        Assert.assertEquals("It is not correct score in element with term is not contain", 0.666,
+        Assert.assertEquals("It is not correct score in element with term is not contain", 0.38,
                 dictionarySimilarityService.metricCompleteness(expectedWithEmpty), 0.001);
     }
 }

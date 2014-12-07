@@ -22,4 +22,18 @@ public class IntegrationFactoryTest extends ApplicationConfigurationTest {
                 .parse(TEST_FOLDER + "test1-first.xsd", TEST_FOLDER + "test1-second.xsd");
         Assert.assertEquals(1d, service.metricCompleteness(), 0.001);
     }
+
+    @Test
+    public void testMiddle() throws Exception {
+        IntegrationFactory.Service service = integrationFactory
+                .parse(TEST_FOLDER + "test2-first.xsd", TEST_FOLDER + "test2-second.xsd");
+        Assert.assertEquals(1d, service.metricCompleteness(), 0.001);
+    }
+
+    @Test
+    public void testBig() throws Exception {
+        IntegrationFactory.Service service = integrationFactory
+                .parse(TEST_FOLDER + "test3-first.xsd", TEST_FOLDER + "test3-second.xsd");
+        Assert.assertEquals(1d, service.metricCompleteness(), 0.001);
+    }
 }

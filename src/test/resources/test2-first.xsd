@@ -7,7 +7,7 @@
       <xs:element name="created" type="xs:dateTime" minOccurs="0"/>
       <xs:element name="mail" type="xs:string" minOccurs="0"/>
       <xs:element name="name" type="xs:string" minOccurs="0"/>
-      <xs:element name="patronymic" type="xs:string" minOccurs="0"/>
+      <xs:element name="secondName" type="xs:string" minOccurs="0"/>
       <xs:element name="surname" type="xs:string" minOccurs="0"/>
       <xs:element name="updated" type="xs:dateTime" minOccurs="0"/>
       <xs:element name="user_id" type="xs:long"/>

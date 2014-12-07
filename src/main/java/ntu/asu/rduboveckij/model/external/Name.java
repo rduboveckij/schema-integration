@@ -1,12 +1,13 @@
 package ntu.asu.rduboveckij.model.external;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * @author andrus.god
  * @since 8/2/2014
  */
-public class Name {
+public class Name implements Serializable {
     private final String name;
 
     public Name(String name) {
@@ -34,8 +35,6 @@ public class Name {
 
     @Override
     public String toString() {
-        return com.google.common.base.Objects.toStringHelper(this)
-                .add("name", name)
-                .toString();
+        return name;
     }
 }

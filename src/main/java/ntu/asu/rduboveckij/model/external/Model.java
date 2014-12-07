@@ -1,7 +1,10 @@
 package ntu.asu.rduboveckij.model.external;
 
 import com.google.common.collect.Sets;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializer;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;

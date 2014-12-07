@@ -1,5 +1,6 @@
 package ntu.asu.rduboveckij.api.similarity;
 
+import ntu.asu.rduboveckij.model.Report;
 import ntu.asu.rduboveckij.model.internal.Mapping;
 import org.xml.sax.SAXException;
 

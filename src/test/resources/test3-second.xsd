@@ -21,7 +21,7 @@
       <xs:element name="customerId" type="xs:long"/>
       <xs:element name="email" type="xs:string" minOccurs="0"/>
       <xs:element name="firstName" type="xs:string" minOccurs="0"/>
-      <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+      <xs:element name="middleName" type="xs:string" minOccurs="0"/>
       <xs:element name="permission" type="permission" minOccurs="0"/>
       <xs:element name="surname" type="xs:string" minOccurs="0"/>
     </xs:sequence>

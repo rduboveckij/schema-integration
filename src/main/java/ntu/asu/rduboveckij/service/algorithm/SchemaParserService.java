@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -49,7 +50,7 @@ public class SchemaParserService implements ParserService {
                 .filter(DataType::isComplex)
                 .map(DataType::asComplex)
                 .map(type -> type.setElement(mapElements.get(type.getName())));
-        return new Model(uri, elements);
+        return new Model(Paths.get(uri).getFileName().toString(), elements);
     }
 
     private static Model.Element parseElement(XSComplexType type) {

@@ -1,10 +1,12 @@
 package ntu.asu.rduboveckij.model.external;
 
+import java.io.Serializable;
+
 /**
  * @author andrus.god
  * @since 8/2/2014
  */
-public abstract class AbstractModelItem<P> extends AbstractParent<P> {
+public abstract class AbstractModelItem<P> extends AbstractParent<P> implements Serializable {
     private final Name name;
 
     protected AbstractModelItem(String name) {
@@ -31,5 +33,10 @@ public abstract class AbstractModelItem<P> extends AbstractParent<P> {
         int result = super.hashCode();
         result = 31 * result + (name.hashCode());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return name.toString();
     }
 }

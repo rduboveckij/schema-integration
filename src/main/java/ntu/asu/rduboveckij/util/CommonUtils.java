@@ -18,6 +18,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,7 +46,6 @@ public final class CommonUtils {
 
     public static double normal(Collection<Pair<Double, Double>> factorValues) {
         double sumOfKey = factorValues.parallelStream()
-                .filter(factor -> factor.getValue() != 0d)
                 .mapToDouble(Pair::getKey)
                 .sum();
         double topSum = factorValues.parallelStream()

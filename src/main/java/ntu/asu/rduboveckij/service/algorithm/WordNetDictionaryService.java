@@ -26,7 +26,7 @@ import static net.sf.extjwnl.data.relationship.RelationshipFinder.findRelationsh
  */
 @Service
 public class WordNetDictionaryService implements DictionaryService {
-    private static Logger LOG = LoggerFactory.getLogger(WordNetDictionaryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WordNetDictionaryService.class);
 
     @Inject
     private AlgorithmSettings settings;
